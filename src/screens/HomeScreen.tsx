@@ -11,7 +11,7 @@ type NavItem = {
 const navItems: NavItem[] = [
   { label: "Home", icon: "home-outline" },
   { label: "Skills", icon: "school-outline" },
-  { label: "AI", icon: "sparkles", active: true },
+  { label: "AI", icon: "star", active: true },
   { label: "Projects", icon: "folder-open-outline" },
   { label: "Profile", icon: "person-outline" },
 ];
@@ -81,7 +81,7 @@ const styles = StyleSheet.create({
     borderRadius: 28,
     borderWidth: 1,
     borderColor: "rgba(255, 255, 255, 0.22)",
-    backgroundColor: "#121829",
+    backgroundColor: "rgba(8, 15, 38, 0.82)",
     paddingVertical: 10,
     paddingHorizontal: 6,
     flexDirection: "row",
@@ -96,13 +96,13 @@ const styles = StyleSheet.create({
   },
   navItemActive: {
     borderRadius: 16,
-    overflow: "hidden",
+    backgroundColor: "rgba(125, 102, 255, 0.35)",
     paddingVertical: 6,
   },
   navLabel: {
     marginTop: 4,
     fontSize: 11,
-    color: "rgba(255, 255, 255, 0.65)",
+    color: "rgba(255, 255, 255, 0.74)",
     fontWeight: "500",
   },
   navLabelActive: {
@@ -122,7 +122,7 @@ export function HomeScreen() {
       <View style={styles.container}>
         <View style={styles.content}>
           <View style={styles.iconBox}>
-            <Ionicons name="sparkles-outline" size={48} color="#FFFFFF" />
+            <Ionicons name="star-outline" size={48} color="#FFFFFF" />
           </View>
 
           <Text style={styles.title}>CareerForge</Text>
@@ -138,35 +138,23 @@ export function HomeScreen() {
         </View>
 
         <View style={styles.navBar}>
-          {navItems.map((item) => {
-            if (item.active) {
-              return (
-                <LinearGradient
-                  key={item.label}
-                  colors={["#6E5CFF", "#A85BFF"]}
-                  start={{ x: 0, y: 0.5 }}
-                  end={{ x: 1, y: 0.5 }}
-                  style={[styles.navItem, styles.navItemActive]}
-                >
-                  <Ionicons name={item.icon} size={20} color="#FFFFFF" />
-                  <Text style={[styles.navLabel, styles.navLabelActive]}>
-                    {item.label}
-                  </Text>
-                </LinearGradient>
-              );
-            }
-
-            return (
-              <View key={item.label} style={styles.navItem}>
-                <Ionicons
-                  name={item.icon}
-                  size={20}
-                  color="rgba(255, 255, 255, 0.65)"
-                />
-                <Text style={styles.navLabel}>{item.label}</Text>
-              </View>
-            );
-          })}
+          {navItems.map((item) => (
+            <View
+              key={item.label}
+              style={[styles.navItem, item.active && styles.navItemActive]}
+            >
+              <Ionicons
+                name={item.icon}
+                size={20}
+                color={item.active ? "#FFFFFF" : "rgba(255, 255, 255, 0.76)"}
+              />
+              <Text
+                style={[styles.navLabel, item.active && styles.navLabelActive]}
+              >
+                {item.label}
+              </Text>
+            </View>
+          ))}
         </View>
       </View>
     </LinearGradient>
