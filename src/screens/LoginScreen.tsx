@@ -7,6 +7,7 @@ import {
   TextInput,
   TouchableOpacity,
   View,
+  Dimensions,
 } from "react-native";
 
 export function LoginScreen() {
@@ -14,101 +15,134 @@ export function LoginScreen() {
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
 
+  const screenWidth = Dimensions.get("window").width;
+
   return (
     <View style={styles.container}>
       <View style={styles.content}>
-        {/* Icon Box */}
-        <View style={styles.iconBox}>
-          <Ionicons name="star-outline" size={32} color="#FFFFFF" />
+        <View style={styles.topIconWrap}>
+          <View style={styles.iconShadow} />
+          <LinearGradient
+            colors={["#7B6CF6", "#C86DD7", "#2EC6C6"]}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 1 }}
+            style={styles.iconGradient}
+          >
+            <Ionicons name="star-outline" size={36} color="#FFFFFF" />
+          </LinearGradient>
         </View>
 
-        {/* Heading */}
-        <Text style={styles.heading}>Welcome Back</Text>
-        <Text style={styles.subtitle}>Sign in to continue your journey</Text>
+        <View style={styles.form}>
+          <Text style={styles.heading}>Welcome Back</Text>
+          <Text style={styles.subtitle}>Sign in to continue your journey</Text>
 
-        {/* Email Input */}
-        <View style={styles.inputContainer}>
-          <Ionicons
-            name="mail-outline"
-            size={20}
-            color="rgba(255, 255, 255, 0.5)"
-            style={styles.inputIcon}
-          />
-          <TextInput
-            style={styles.input}
-            placeholder="Email address"
-            placeholderTextColor="rgba(255, 255, 255, 0.5)"
-            value={email}
-            onChangeText={setEmail}
-            keyboardType="email-address"
-          />
-        </View>
-
-        {/* Password Input */}
-        <View style={styles.inputContainer}>
-          <Ionicons
-            name="lock-closed-outline"
-            size={20}
-            color="rgba(255, 255, 255, 0.5)"
-            style={styles.inputIcon}
-          />
-          <TextInput
-            style={styles.input}
-            placeholder="Password"
-            placeholderTextColor="rgba(255, 255, 255, 0.5)"
-            value={password}
-            onChangeText={setPassword}
-            secureTextEntry={!showPassword}
-          />
-          <TouchableOpacity
-            onPress={() => setShowPassword(!showPassword)}
-            style={styles.eyeIcon}
+          <View
+            style={[
+              styles.inputContainer,
+              { width: Math.min(520, screenWidth - 48) },
+            ]}
           >
             <Ionicons
-              name={showPassword ? "eye-outline" : "eye-off-outline"}
+              name="mail-outline"
               size={20}
-              color="rgba(255, 255, 255, 0.5)"
+              color="rgba(255,255,255,0.5)"
+              style={styles.inputIcon}
             />
-          </TouchableOpacity>
+            <TextInput
+              style={styles.input}
+              placeholder="Email address"
+              placeholderTextColor="rgba(255,255,255,0.5)"
+              value={email}
+              onChangeText={setEmail}
+              keyboardType="email-address"
+            />
+          </View>
+
+          <View
+            style={[
+              styles.inputContainer,
+              { width: Math.min(520, screenWidth - 48) },
+            ]}
+          >
+            <Ionicons
+              name="lock-closed-outline"
+              size={20}
+              color="rgba(255,255,255,0.5)"
+              style={styles.inputIcon}
+            />
+            <TextInput
+              style={styles.input}
+              placeholder="Password"
+              placeholderTextColor="rgba(255,255,255,0.5)"
+              value={password}
+              onChangeText={setPassword}
+              secureTextEntry={!showPassword}
+            />
+            <TouchableOpacity
+              onPress={() => setShowPassword(!showPassword)}
+              style={styles.eyeIcon}
+            >
+              <Ionicons
+                name={showPassword ? "eye-outline" : "eye-off-outline"}
+                size={20}
+                color="rgba(255,255,255,0.5)"
+              />
+            </TouchableOpacity>
+          </View>
+
+          <View
+            style={[
+              styles.forgotPasswordRow,
+              { width: Math.min(520, screenWidth - 48) },
+            ]}
+          >
+            <TouchableOpacity>
+              <Text style={styles.forgotPassword}>Forgot password?</Text>
+            </TouchableOpacity>
+          </View>
+
+          <LinearGradient
+            colors={["#7B6CF6", "#2EC6C6"]}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 0 }}
+            style={[
+              styles.signInButton,
+              { width: Math.min(520, screenWidth - 48) },
+            ]}
+          >
+            <Text style={styles.signInButtonText}>Sign In</Text>
+          </LinearGradient>
+
+          <View
+            style={[
+              styles.dividerContainer,
+              { width: Math.min(520, screenWidth - 48) },
+            ]}
+          >
+            <View style={styles.dividerLine} />
+            <Text style={styles.dividerText}>or continue with</Text>
+            <View style={styles.dividerLine} />
+          </View>
+
+          <View
+            style={[
+              styles.socialContainer,
+              { width: Math.min(520, screenWidth - 48) },
+            ]}
+          >
+            <TouchableOpacity style={styles.socialButton}>
+              <Ionicons name="logo-google" size={18} color="#FFFFFF" />
+              <Text style={styles.socialButtonText}>Google</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.socialButton}>
+              <Ionicons name="logo-github" size={18} color="#FFFFFF" />
+              <Text style={styles.socialButtonText}>GitHub</Text>
+            </TouchableOpacity>
+          </View>
         </View>
 
-        {/* Forgot Password */}
-        <TouchableOpacity>
-          <Text style={styles.forgotPassword}>Forgot password?</Text>
-        </TouchableOpacity>
-
-        {/* Sign In Button */}
-        <LinearGradient
-          colors={["#7B6CF6", "#2EC6C6"]}
-          start={{ x: 0, y: 0 }}
-          end={{ x: 1, y: 0 }}
-          style={styles.signInButton}
-        >
-          <Text style={styles.signInButtonText}>Sign In</Text>
-        </LinearGradient>
-
-        {/* Divider */}
-        <View style={styles.dividerContainer}>
-          <View style={styles.dividerLine} />
-          <Text style={styles.dividerText}>or continue with</Text>
-          <View style={styles.dividerLine} />
-        </View>
-
-        {/* Social Buttons */}
-        <View style={styles.socialContainer}>
-          <TouchableOpacity style={styles.socialButton}>
-            <Ionicons name="logo-google" size={20} color="#FFFFFF" />
-            <Text style={styles.socialButtonText}>Google</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.socialButton}>
-            <Ionicons name="logo-github" size={20} color="#FFFFFF" />
-            <Text style={styles.socialButtonText}>GitHub</Text>
-          </TouchableOpacity>
-        </View>
-
-        {/* Sign Up Link */}
         <View style={styles.signUpContainer}>
-          <Text style={styles.signUpText}>Don't have an account?{" "}</Text>
+          <Text style={styles.signUpText}>Don't have an account? </Text>
           <TouchableOpacity>
             <Text style={styles.signUpLink}>Sign Up</Text>
           </TouchableOpacity>
@@ -123,10 +157,15 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#0A0E27",
     paddingHorizontal: 24,
-    paddingVertical: 40,
+    paddingTop: 36,
+    paddingBottom: 24,
   },
   content: {
     flex: 1,
+    justifyContent: "flex-start",
+  },
+  form: {
+    marginTop: 28,
   },
   iconBox: {
     width: 56,
@@ -135,29 +174,59 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     backgroundColor: "rgba(255, 255, 255, 0.1)",
-    marginTop: 20,
-    marginBottom: 24,
+    marginBottom: 8,
+  },
+  topIconWrap: {
+    alignItems: "center",
+    justifyContent: "center",
+    marginTop: 36,
+    marginBottom: 12,
+  },
+  iconShadow: {
+    position: "absolute",
+    width: 120,
+    height: 120,
+    borderRadius: 28,
+    shadowColor: "#7B6CF6",
+    shadowOffset: { width: 0, height: 10 },
+    shadowOpacity: 0.35,
+    shadowRadius: 30,
+    elevation: 8,
+    zIndex: -1,
+  },
+  iconGradient: {
+    width: 88,
+    height: 88,
+    borderRadius: 20,
+    alignItems: "center",
+    justifyContent: "center",
+    zIndex: 1,
   },
   heading: {
     fontSize: 28,
     fontWeight: "bold",
     color: "#FFFFFF",
     marginBottom: 8,
+    textAlign: "center",
+    alignSelf: "center",
   },
   subtitle: {
     fontSize: 16,
     color: "rgba(255, 255, 255, 0.6)",
-    marginBottom: 32,
+    marginBottom: 44,
+    textAlign: "center",
+    alignSelf: "center",
   },
   inputContainer: {
     flexDirection: "row",
     alignItems: "center",
+    height: 52,
     borderWidth: 1,
-    borderColor: "rgba(255, 255, 255, 0.2)",
-    borderRadius: 12,
+    borderColor: "rgba(255, 255, 255, 0.08)",
+    borderRadius: 14,
     paddingHorizontal: 16,
-    marginBottom: 16,
-    backgroundColor: "rgba(255, 255, 255, 0.05)",
+    marginBottom: 22,
+    backgroundColor: "rgba(255, 255, 255, 0.02)",
   },
   inputIcon: {
     marginRight: 12,
@@ -172,18 +241,22 @@ const styles = StyleSheet.create({
     marginLeft: 12,
   },
   forgotPassword: {
-    fontSize: 14,
-    color: "#7B6CF6",
+    fontSize: 13,
     fontWeight: "600",
     textAlign: "right",
-    marginBottom: 24,
+    color: "#7B6CF6",
+  },
+  forgotPasswordRow: {
+    alignItems: "flex-end",
+    marginTop: 2,
+    marginBottom: 28,
   },
   signInButton: {
-    borderRadius: 12,
-    paddingVertical: 14,
+    borderRadius: 14,
+    paddingVertical: 16,
     alignItems: "center",
     justifyContent: "center",
-    marginBottom: 24,
+    marginBottom: 34,
   },
   signInButtonText: {
     fontSize: 16,
@@ -193,7 +266,7 @@ const styles = StyleSheet.create({
   dividerContainer: {
     flexDirection: "row",
     alignItems: "center",
-    marginBottom: 24,
+    marginBottom: 18,
   },
   dividerLine: {
     flex: 1,
@@ -207,19 +280,20 @@ const styles = StyleSheet.create({
   },
   socialContainer: {
     flexDirection: "row",
-    gap: 12,
-    marginBottom: 32,
+    justifyContent: "space-between",
+    marginTop: 10,
+    marginBottom: 24,
   },
   socialButton: {
-    flex: 1,
+    width: '48%',
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
     borderWidth: 1,
-    borderColor: "rgba(255, 255, 255, 0.2)",
+    borderColor: "rgba(255, 255, 255, 0.08)",
     borderRadius: 12,
     paddingVertical: 12,
-    backgroundColor: "rgba(255, 255, 255, 0.05)",
+    backgroundColor: "rgba(255, 255, 255, 0.02)",
   },
   socialButtonText: {
     marginLeft: 8,
@@ -232,7 +306,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     marginTop: "auto",
-    paddingBottom: 20,
+    paddingBottom: 30,
   },
   signUpText: {
     fontSize: 14,

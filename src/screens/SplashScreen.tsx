@@ -1,6 +1,6 @@
 import { Ionicons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
 
 type SplashScreenProps = {
@@ -64,15 +64,30 @@ const styles = StyleSheet.create({
   dot3: {
     opacity: 0.35,
   },
+  paginationActive: {
+    opacity: 0.95,
+    transform: [{ scale: 1.05 }],
+  },
+  paginationInactive: {
+    opacity: 0.32,
+  },
 });
 
 export function SplashScreen({ onNavigateToLogin }: SplashScreenProps) {
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      onNavigateToLogin();
-    }, 4500);
+  const [activeIndex, setActiveIndex] = useState<number | null>(null);
 
-    return () => clearTimeout(timer);
+  useEffect(() => {
+    const timers: Array<number> = [];
+
+    // Activate dots at 0.5s, 1s, 1.5s
+    timers.push(window.setTimeout(() => setActiveIndex(0), 500));
+    timers.push(window.setTimeout(() => setActiveIndex(1), 1000));
+    timers.push(window.setTimeout(() => setActiveIndex(2), 1500));
+
+    // After the sequence, navigate to login at 2s
+    timers.push(window.setTimeout(() => onNavigateToLogin(), 2000));
+
+    return () => timers.forEach((t) => clearTimeout(t));
   }, [onNavigateToLogin]);
 
   return (
@@ -94,9 +109,17 @@ export function SplashScreen({ onNavigateToLogin }: SplashScreenProps) {
           </Text>
 
           <View style={styles.paginationContainer}>
-            <View style={[styles.paginationDot, styles.dot1]} />
-            <View style={[styles.paginationDot, styles.dot2]} />
-            <View style={[styles.paginationDot, styles.dot3]} />
+            {[0, 1, 2].map((i) => (
+              <View
+                key={i}
+                style={[
+                  styles.paginationDot,
+                  i === activeIndex
+                    ? styles.paginationActive
+                    : styles.paginationInactive,
+                ]}
+              />
+            ))}
           </View>
         </View>
       </View>
