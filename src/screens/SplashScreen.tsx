@@ -64,7 +64,7 @@ const styles = StyleSheet.create({
 export function SplashScreen() {
   return (
     <LinearGradient
-      colors={["#7D66FF", "#B365D6", "#39C2E2"]}
+      colors={["#7B6CF6", "#C86DD7", "#2EC6C6"]}
       start={{ x: 0, y: 0 }}
       end={{ x: 1, y: 1 }}
       style={styles.gradient}
