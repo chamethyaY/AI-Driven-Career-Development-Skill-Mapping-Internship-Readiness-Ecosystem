@@ -102,9 +102,9 @@ export function LoginScreen() {
           </View>
 
           <LinearGradient
-            colors={["#7B6CF6", "#2EC6C6"]}
+            colors={["#7B6CF6", "#C86DD7", "#2EC6C6"]}
             start={{ x: 0, y: 0 }}
-            end={{ x: 1, y: 0 }}
+            end={{ x: 1, y: 1 }}
             style={[
               styles.signInButton,
               { width: Math.min(520, screenWidth - 48) },
@@ -285,7 +285,7 @@ const styles = StyleSheet.create({
     marginBottom: 24,
   },
   socialButton: {
-    width: '48%',
+    width: "48%",
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",

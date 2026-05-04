@@ -13,17 +13,22 @@ const styles = StyleSheet.create({
 });
 
 export default function App() {
-  const [currentScreen, setCurrentScreen] = useState<"splash" | "login">(
-    "splash",
-  );
+  const [currentScreen, setCurrentScreen] = useState<
+    "splash" | "login" | "signup"
+  >("splash");
 
   return (
     <SafeAreaView style={styles.safeArea}>
       <StatusBar style="light" />
       {currentScreen === "splash" ? (
-        <SplashScreen onNavigateToLogin={() => setCurrentScreen("login")} />
-      ) : (
+        <SplashScreen
+          onNavigateToLogin={() => setCurrentScreen("login")}
+          onNavigateToSignUp={() => setCurrentScreen("signup")}
+        />
+      ) : currentScreen === "login" ? (
         <LoginScreen />
+      ) : (
+        <LoginScreen /> // TODO: Create SignUpScreen component
       )}
     </SafeAreaView>
   );

@@ -1,10 +1,11 @@
 import { Ionicons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
-import { useEffect, useState } from "react";
+import { TouchableOpacity } from "react-native";
 import { StyleSheet, Text, View } from "react-native";
 
 type SplashScreenProps = {
   onNavigateToLogin: () => void;
+  onNavigateToSignUp: () => void;
 };
 
 const styles = StyleSheet.create({
@@ -13,83 +14,87 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
     paddingHorizontal: 24,
+    paddingTop: 60,
+    paddingBottom: 40,
+    justifyContent: "space-between",
+  },
+  topSpace: {
+    flex: 0.5,
   },
   content: {
     alignItems: "center",
-    marginTop: -72,
+    flex: 1.5,
+    justifyContent: "center",
   },
   iconBox: {
-    width: 112,
-    height: 112,
-    borderRadius: 24,
+    width: 88,
+    height: 88,
+    borderRadius: 20,
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "rgba(255, 255, 255, 0.12)",
+    backgroundColor: "rgba(255, 255, 255, 0.15)",
+    marginBottom: 24,
   },
-  title: {
-    marginTop: 28,
-    fontSize: 48,
+  appName: {
+    fontSize: 36,
     fontWeight: "bold",
     color: "#FFFFFF",
+    marginBottom: 8,
   },
-  subtitle: {
-    marginTop: 12,
-    fontSize: 20,
-    fontWeight: "500",
-    textAlign: "center",
+  tagline: {
+    fontSize: 16,
+    fontWeight: "600",
+    color: "rgba(255, 255, 255, 0.9)",
+    marginBottom: 16,
+  },
+  description: {
+    fontSize: 14,
     color: "rgba(255, 255, 255, 0.7)",
+    textAlign: "center",
+    lineHeight: 20,
+    marginBottom: 40,
   },
-  paginationContainer: {
-    marginTop: 80,
-    flexDirection: "row",
+  buttonContainer: {
+    width: "100%",
+    gap: 12,
+    flex: 1,
+    justifyContent: "flex-end",
+  },
+  primaryButton: {
+    borderRadius: 14,
+    paddingVertical: 16,
     alignItems: "center",
     justifyContent: "center",
-    gap: 12,
   },
-  paginationDot: {
-    width: 12,
-    height: 12,
-    borderRadius: 6,
-    backgroundColor: "#FFFFFF",
+  primaryButtonText: {
+    fontSize: 16,
+    fontWeight: "700",
+    color: "#FFFFFF",
   },
-  dot1: {
-    opacity: 0.9,
+  secondaryButton: {
+    borderRadius: 14,
+    paddingVertical: 16,
+    alignItems: "center",
+    justifyContent: "center",
+    borderWidth: 1.5,
+    borderColor: "rgba(255, 255, 255, 0.3)",
+    backgroundColor: "rgba(255, 255, 255, 0.05)",
   },
-  dot2: {
-    opacity: 0.55,
+  secondaryButtonText: {
+    fontSize: 16,
+    fontWeight: "700",
+    color: "#FFFFFF",
   },
-  dot3: {
-    opacity: 0.35,
-  },
-  paginationActive: {
-    opacity: 0.95,
-    transform: [{ scale: 1.05 }],
-  },
-  paginationInactive: {
-    opacity: 0.32,
+  bottomSpace: {
+    flex: 0.5,
   },
 });
 
-export function SplashScreen({ onNavigateToLogin }: SplashScreenProps) {
-  const [activeIndex, setActiveIndex] = useState<number | null>(null);
-
-  useEffect(() => {
-    const timers: Array<number> = [];
-
-    // Activate dots at 0.5s, 1s, 1.5s
-    timers.push(window.setTimeout(() => setActiveIndex(0), 500));
-    timers.push(window.setTimeout(() => setActiveIndex(1), 1000));
-    timers.push(window.setTimeout(() => setActiveIndex(2), 1500));
-
-    // After the sequence, navigate to login at 2s
-    timers.push(window.setTimeout(() => onNavigateToLogin(), 2000));
-
-    return () => timers.forEach((t) => clearTimeout(t));
-  }, [onNavigateToLogin]);
-
+export function SplashScreen({
+  onNavigateToLogin,
+  onNavigateToSignUp,
+}: SplashScreenProps) {
   return (
     <LinearGradient
       colors={["#7B6CF6", "#C86DD7", "#2EC6C6"]}
@@ -98,30 +103,44 @@ export function SplashScreen({ onNavigateToLogin }: SplashScreenProps) {
       style={styles.gradient}
     >
       <View style={styles.container}>
+        <View style={styles.topSpace} />
+
         <View style={styles.content}>
           <View style={styles.iconBox}>
-            <Ionicons name="star-outline" size={48} color="#FFFFFF" />
+            <Ionicons name="star-outline" size={40} color="#FFFFFF" />
           </View>
 
-          <Text style={styles.title}>CareerForge</Text>
-          <Text style={styles.subtitle}>
-            AI-Powered Career Operating System
+          <Text style={styles.appName}>CareerForge</Text>
+          <Text style={styles.tagline}>Your Career Assistant</Text>
+          <Text style={styles.description}>
+            AI-powered guidance to unlock your professional potential
           </Text>
-
-          <View style={styles.paginationContainer}>
-            {[0, 1, 2].map((i) => (
-              <View
-                key={i}
-                style={[
-                  styles.paginationDot,
-                  i === activeIndex
-                    ? styles.paginationActive
-                    : styles.paginationInactive,
-                ]}
-              />
-            ))}
-          </View>
         </View>
+
+        <View style={styles.buttonContainer}>
+          <LinearGradient
+            colors={["#7B6CF6", "#C86DD7", "#2EC6C6"]}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 1 }}
+            style={styles.primaryButton}
+          >
+            <TouchableOpacity
+              onPress={onNavigateToSignUp}
+              style={{ width: "100%", alignItems: "center" }}
+            >
+              <Text style={styles.primaryButtonText}>Sign Up</Text>
+            </TouchableOpacity>
+          </LinearGradient>
+
+          <TouchableOpacity
+            style={styles.secondaryButton}
+            onPress={onNavigateToLogin}
+          >
+            <Text style={styles.secondaryButtonText}>Sign In</Text>
+          </TouchableOpacity>
+        </View>
+
+        <View style={styles.bottomSpace} />
       </View>
     </LinearGradient>
   );
