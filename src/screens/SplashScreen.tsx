@@ -1,6 +1,11 @@
 import { Ionicons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
+import { useEffect } from "react";
 import { StyleSheet, Text, View } from "react-native";
+
+type SplashScreenProps = {
+  onNavigateToLogin: () => void;
+};
 
 const styles = StyleSheet.create({
   gradient: {
@@ -61,7 +66,15 @@ const styles = StyleSheet.create({
   },
 });
 
-export function SplashScreen() {
+export function SplashScreen({ onNavigateToLogin }: SplashScreenProps) {
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      onNavigateToLogin();
+    }, 4500);
+
+    return () => clearTimeout(timer);
+  }, [onNavigateToLogin]);
+
   return (
     <LinearGradient
       colors={["#7B6CF6", "#C86DD7", "#2EC6C6"]}

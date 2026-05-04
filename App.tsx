@@ -1,6 +1,8 @@
 import { StatusBar } from "expo-status-bar";
+import { useState } from "react";
 import { StyleSheet } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { LoginScreen } from "./src/screens/LoginScreen";
 import { SplashScreen } from "./src/screens/SplashScreen";
 
 const styles = StyleSheet.create({
@@ -11,10 +13,18 @@ const styles = StyleSheet.create({
 });
 
 export default function App() {
+  const [currentScreen, setCurrentScreen] = useState<"splash" | "login">(
+    "splash",
+  );
+
   return (
     <SafeAreaView style={styles.safeArea}>
       <StatusBar style="light" />
-      <SplashScreen />
+      {currentScreen === "splash" ? (
+        <SplashScreen onNavigateToLogin={() => setCurrentScreen("login")} />
+      ) : (
+        <LoginScreen />
+      )}
     </SafeAreaView>
   );
 }
