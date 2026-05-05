@@ -1,0 +1,276 @@
+import { Ionicons } from "@expo/vector-icons";
+import { LinearGradient } from "expo-linear-gradient";
+import { useState } from "react";
+import {
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+  Dimensions,
+} from "react-native";
+
+export function SignUp({ onNavigateToSignIn }: { onNavigateToSignIn?: () => void }) {
+  const [email, setEmail] = useState("");
+  const [createPassword, setCreatePassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [showCreatePassword, setShowCreatePassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
+  const screenWidth = Dimensions.get("window").width;
+
+  return (
+    <View style={styles.container}>
+      <View style={styles.content}>
+        <View style={styles.topIconWrap}>
+          <View style={styles.iconShadow} />
+          <LinearGradient
+            colors={["#7B6CF6", "#C86DD7", "#2EC6C6"]}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 1 }}
+            style={styles.iconGradient}
+          >
+            <Ionicons name="star-outline" size={36} color="#FFFFFF" />
+          </LinearGradient>
+        </View>
+
+        <View style={styles.form}>
+          <Text style={styles.heading}>Create Account</Text>
+          <Text style={styles.subtitle}>Sign up to start your journey</Text>
+
+          <View style={[styles.inputContainer, { width: Math.min(520, screenWidth - 48) }]}>
+            <Ionicons name="mail-outline" size={20} color="rgba(255,255,255,0.5)" style={styles.inputIcon} />
+            <TextInput
+              style={styles.input}
+              placeholder="Email address"
+              placeholderTextColor="rgba(255,255,255,0.5)"
+              value={email}
+              onChangeText={setEmail}
+              keyboardType="email-address"
+            />
+          </View>
+
+          <View style={[styles.inputContainer, { width: Math.min(520, screenWidth - 48) }]}>
+            <Ionicons name="lock-closed-outline" size={20} color="rgba(255,255,255,0.5)" style={styles.inputIcon} />
+            <TextInput
+              style={styles.input}
+              placeholder="Create password"
+              placeholderTextColor="rgba(255,255,255,0.5)"
+              value={createPassword}
+              onChangeText={setCreatePassword}
+              secureTextEntry={!showCreatePassword}
+            />
+            <TouchableOpacity onPress={() => setShowCreatePassword(!showCreatePassword)} style={styles.eyeIcon}>
+              <Ionicons name={showCreatePassword ? "eye-outline" : "eye-off-outline"} size={20} color="rgba(255,255,255,0.5)" />
+            </TouchableOpacity>
+          </View>
+
+          <View style={[styles.inputContainer, { width: Math.min(520, screenWidth - 48) }]}>
+            <Ionicons name="lock-closed-outline" size={20} color="rgba(255,255,255,0.5)" style={styles.inputIcon} />
+            <TextInput
+              style={styles.input}
+              placeholder="Confirm password"
+              placeholderTextColor="rgba(255,255,255,0.5)"
+              value={confirmPassword}
+              onChangeText={setConfirmPassword}
+              secureTextEntry={!showConfirmPassword}
+            />
+            <TouchableOpacity onPress={() => setShowConfirmPassword(!showConfirmPassword)} style={styles.eyeIcon}>
+              <Ionicons name={showConfirmPassword ? "eye-outline" : "eye-off-outline"} size={20} color="rgba(255,255,255,0.5)" />
+            </TouchableOpacity>
+          </View>
+
+          
+
+          <TouchableOpacity activeOpacity={0.9}>
+            <LinearGradient colors={["#7B6CF6", "#C86DD7", "#2EC6C6"]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={[styles.signInButton, { width: Math.min(520, screenWidth - 48) }]}>
+              <Text style={styles.signInButtonText}>Sign Up</Text>
+            </LinearGradient>
+          </TouchableOpacity>
+
+          <View style={[styles.dividerContainer, { width: Math.min(520, screenWidth - 48) }]}>
+            <View style={styles.dividerLine} />
+            <Text style={styles.dividerText}>or continue with</Text>
+            <View style={styles.dividerLine} />
+          </View>
+
+          <View style={[styles.socialContainer, { width: Math.min(520, screenWidth - 48) }]}>
+            <TouchableOpacity style={styles.socialButton}>
+              <Ionicons name="logo-google" size={18} color="#FFFFFF" />
+              <Text style={styles.socialButtonText}>Google</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.socialButton}>
+              <Ionicons name="logo-github" size={18} color="#FFFFFF" />
+              <Text style={styles.socialButtonText}>GitHub</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+
+        <View style={styles.signUpContainer}>
+          <Text style={styles.signUpText}>Already have an account? </Text>
+          <TouchableOpacity onPress={() => onNavigateToSignIn && onNavigateToSignIn()}>
+            <Text style={styles.signUpLink}>Sign In</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+    </View>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: "#0A0E27",
+    paddingHorizontal: 24,
+    paddingTop: 36,
+    paddingBottom: 24,
+  },
+  content: {
+    flex: 1,
+    justifyContent: "flex-start",
+  },
+  form: {
+    marginTop: 28,
+  },
+  topIconWrap: {
+    alignItems: "center",
+    justifyContent: "center",
+    marginTop: 36,
+    marginBottom: 12,
+  },
+  iconShadow: {
+    position: "absolute",
+    width: 120,
+    height: 120,
+    borderRadius: 28,
+    shadowColor: "#7B6CF6",
+    shadowOffset: { width: 0, height: 10 },
+    shadowOpacity: 0.35,
+    shadowRadius: 30,
+    elevation: 8,
+    zIndex: -1,
+  },
+  iconGradient: {
+    width: 88,
+    height: 88,
+    borderRadius: 20,
+    alignItems: "center",
+    justifyContent: "center",
+    zIndex: 1,
+  },
+  heading: {
+    fontSize: 28,
+    fontWeight: "bold",
+    color: "#FFFFFF",
+    marginBottom: 8,
+    textAlign: "center",
+    alignSelf: "center",
+  },
+  subtitle: {
+    fontSize: 16,
+    color: "rgba(255, 255, 255, 0.6)",
+    marginBottom: 44,
+    textAlign: "center",
+    alignSelf: "center",
+  },
+  inputContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    height: 52,
+    borderWidth: 1,
+    borderColor: "rgba(255, 255, 255, 0.08)",
+    borderRadius: 14,
+    paddingHorizontal: 16,
+    marginBottom: 22,
+    backgroundColor: "rgba(255, 255, 255, 0.02)",
+  },
+  inputIcon: {
+    marginRight: 12,
+  },
+  input: {
+    flex: 1,
+    paddingVertical: 12,
+    color: "#FFFFFF",
+    fontSize: 16,
+  },
+  eyeIcon: {
+    marginLeft: 12,
+  },
+  forgotPassword: {
+    fontSize: 13,
+    fontWeight: "600",
+    textAlign: "right",
+    color: "#7B6CF6",
+  },
+  forgotPasswordRow: {
+    alignItems: "flex-end",
+    marginTop: 2,
+    marginBottom: 28,
+  },
+  signInButton: {
+    borderRadius: 14,
+    paddingVertical: 16,
+    alignItems: "center",
+    justifyContent: "center",
+    marginBottom: 34,
+  },
+  signInButtonText: {
+    fontSize: 16,
+    fontWeight: "700",
+    color: "#FFFFFF",
+  },
+  dividerContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 18,
+  },
+  dividerLine: {
+    flex: 1,
+    height: 1,
+    backgroundColor: "rgba(255, 255, 255, 0.2)",
+  },
+  dividerText: {
+    marginHorizontal: 12,
+    fontSize: 13,
+    color: "rgba(255, 255, 255, 0.5)",
+  },
+  socialContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginTop: 10,
+    marginBottom: 24,
+  },
+  socialButton: {
+    width: "48%",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    borderWidth: 1,
+    borderColor: "rgba(255, 255, 255, 0.08)",
+    borderRadius: 12,
+    paddingVertical: 12,
+    backgroundColor: "rgba(255, 255, 255, 0.02)",
+  },
+  socialButtonText: {
+    marginLeft: 8,
+    fontSize: 14,
+    fontWeight: "600",
+    color: "#FFFFFF",
+  },
+  signUpContainer: {
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: "auto",
+    paddingBottom: 30,
+  },
+  signUpText: {
+    fontSize: 14,
+    color: "rgba(255, 255, 255, 0.6)",
+  },
+  signUpLink: {
+    fontSize: 14,
+    fontWeight: "700",
+    color: "#7B6CF6",
+  },
+});

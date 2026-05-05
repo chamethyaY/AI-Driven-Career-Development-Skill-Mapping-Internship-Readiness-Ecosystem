@@ -2,7 +2,8 @@ import { StatusBar } from "expo-status-bar";
 import { useState } from "react";
 import { StyleSheet } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { LoginScreen } from "./src/screens/LoginScreen";
+import { SignIn } from "./src/screens/signIn";
+import { SignUp } from "./src/screens/SignUp";
 import { SplashScreen } from "./src/screens/SplashScreen";
 
 const styles = StyleSheet.create({
@@ -13,22 +14,19 @@ const styles = StyleSheet.create({
 });
 
 export default function App() {
-  const [currentScreen, setCurrentScreen] = useState<
-    "splash" | "login" | "signup"
-  >("splash");
+  const [currentScreen, setCurrentScreen] = useState<"splash" | "signin" | "signup">(
+    "splash",
+  );
 
   return (
     <SafeAreaView style={styles.safeArea}>
       <StatusBar style="light" />
       {currentScreen === "splash" ? (
-        <SplashScreen
-          onNavigateToLogin={() => setCurrentScreen("login")}
-          onNavigateToSignUp={() => setCurrentScreen("signup")}
-        />
-      ) : currentScreen === "login" ? (
-        <LoginScreen />
+        <SplashScreen onNavigateToLogin={() => setCurrentScreen("signin")} />
+      ) : currentScreen === "signin" ? (
+        <SignIn onNavigateToSignUp={() => setCurrentScreen("signup")} />
       ) : (
-        <LoginScreen /> // TODO: Create SignUpScreen component
+        <SignUp onNavigateToSignIn={() => setCurrentScreen("signin")} />
       )}
     </SafeAreaView>
   );

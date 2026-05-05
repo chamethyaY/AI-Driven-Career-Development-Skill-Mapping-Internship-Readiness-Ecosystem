@@ -9,8 +9,7 @@ import {
   View,
   Dimensions,
 } from "react-native";
-
-export function LoginScreen() {
+export function SignIn({ onNavigateToSignUp }: { onNavigateToSignUp?: () => void }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -101,17 +100,19 @@ export function LoginScreen() {
             </TouchableOpacity>
           </View>
 
-          <LinearGradient
-            colors={["#7B6CF6", "#C86DD7", "#2EC6C6"]}
-            start={{ x: 0, y: 0 }}
-            end={{ x: 1, y: 1 }}
-            style={[
-              styles.signInButton,
-              { width: Math.min(520, screenWidth - 48) },
-            ]}
-          >
-            <Text style={styles.signInButtonText}>Sign In</Text>
-          </LinearGradient>
+          <TouchableOpacity onPress={() => onNavigateToSignUp && onNavigateToSignUp()} activeOpacity={0.9}>
+            <LinearGradient
+              colors={["#7B6CF6", "#C86DD7", "#2EC6C6"]}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 0 }}
+              style={[
+                styles.signInButton,
+                { width: Math.min(520, screenWidth - 48) },
+              ]}
+            >
+              <Text style={styles.signInButtonText}>Sign Up</Text>
+            </LinearGradient>
+          </TouchableOpacity>
 
           <View
             style={[
@@ -143,7 +144,7 @@ export function LoginScreen() {
 
         <View style={styles.signUpContainer}>
           <Text style={styles.signUpText}>Don't have an account? </Text>
-          <TouchableOpacity>
+          <TouchableOpacity onPress={() => onNavigateToSignUp && onNavigateToSignUp()}>
             <Text style={styles.signUpLink}>Sign Up</Text>
           </TouchableOpacity>
         </View>
