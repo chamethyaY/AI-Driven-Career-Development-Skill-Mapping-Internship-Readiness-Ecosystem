@@ -20,14 +20,25 @@ export default function App() {
     "splash" | "signin" | "signup" | "verify" | "dashboard"
   >("splash");
   const [verifyEmail, setVerifyEmail] = useState("");
+  const [splashNextScreen, setSplashNextScreen] = useState<"signin" | "dashboard">("signin");
+
+  const handleSplashComplete = () => {
+    setCurrentScreen(splashNextScreen);
+  };
 
   return (
     <SafeAreaView style={styles.safeArea}>
       <StatusBar style="light" />
       {currentScreen === "splash" ? (
-        <SplashScreen onNavigateToLogin={() => setCurrentScreen("signin")} />
+        <SplashScreen onNavigateToLogin={handleSplashComplete} />
       ) : currentScreen === "signin" ? (
-        <SignIn onNavigateToSignUp={() => setCurrentScreen("signup")} />
+        <SignIn
+          onNavigateToSignUp={() => setCurrentScreen("signup")}
+          onNavigateToSplash={() => {
+            setSplashNextScreen("dashboard");
+            setCurrentScreen("splash");
+          }}
+        />
       ) : currentScreen === "signup" ? (
         <SignUp
           onNavigateToSignIn={() => setCurrentScreen("signin")}

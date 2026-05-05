@@ -1,24 +1,64 @@
 import { Ionicons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
-import { useState } from "react";
+import { useRef, useState } from "react";
+import { supabase } from "../services/supabase";
 import {
+  Alert,
+  Keyboard,
+  KeyboardAvoidingView,
+  Platform,
   StyleSheet,
   Text,
   TextInput,
   TouchableOpacity,
+  TouchableWithoutFeedback,
   View,
   Dimensions,
 } from "react-native";
-export function SignIn({ onNavigateToSignUp }: { onNavigateToSignUp?: () => void }) {
+export function SignIn({
+  onNavigateToSignUp,
+  onNavigateToSplash,
+}: {
+  onNavigateToSignUp?: () => void;
+  onNavigateToSplash?: () => void;
+}) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const screenWidth = Dimensions.get("window").width;
+  const emailRef = useRef<TextInput>(null);
+  const passwordRef = useRef<TextInput>(null);
+
+  const handleSignIn = async () => {
+    Keyboard.dismiss();
+    setLoading(true);
+    try {
+      const { error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
+
+      if (error) {
+        Alert.alert("Sign in failed", error.message || "Please check your credentials.");
+        return;
+      }
+
+      onNavigateToSplash?.();
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
-    <View style={styles.container}>
-      <View style={styles.content}>
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
+      <KeyboardAvoidingView
+        style={styles.container}
+        behavior={Platform.OS === "ios" ? "padding" : undefined}
+        keyboardVerticalOffset={Platform.OS === "ios" ? 60 : 0}
+      >
+        <View style={styles.content}>
         <View style={styles.topIconWrap}>
           <View style={styles.iconShadow} />
           <LinearGradient
@@ -35,57 +75,41 @@ export function SignIn({ onNavigateToSignUp }: { onNavigateToSignUp?: () => void
           <Text style={styles.heading}>Welcome Back</Text>
           <Text style={styles.subtitle}>Sign in to continue your journey</Text>
 
-          <View
-            style={[
-              styles.inputContainer,
-              { width: Math.min(520, screenWidth - 48) },
-            ]}
-          >
-            <Ionicons
-              name="mail-outline"
-              size={20}
-              color="rgba(255,255,255,0.5)"
-              style={styles.inputIcon}
-            />
+          <View style={[styles.inputContainer, { width: Math.min(520, screenWidth - 48) }]}>
+            <Ionicons name="mail-outline" size={20} color="rgba(255,255,255,0.5)" style={styles.inputIcon} />
             <TextInput
+              ref={emailRef}
               style={styles.input}
               placeholder="Email address"
               placeholderTextColor="rgba(255,255,255,0.5)"
               value={email}
               onChangeText={setEmail}
               keyboardType="email-address"
+              autoCapitalize="none"
+              textContentType="emailAddress"
+              autoComplete="email"
+              returnKeyType="next"
+              onSubmitEditing={() => passwordRef.current?.focus()}
             />
           </View>
 
-          <View
-            style={[
-              styles.inputContainer,
-              { width: Math.min(520, screenWidth - 48) },
-            ]}
-          >
-            <Ionicons
-              name="lock-closed-outline"
-              size={20}
-              color="rgba(255,255,255,0.5)"
-              style={styles.inputIcon}
-            />
+          <View style={[styles.inputContainer, { width: Math.min(520, screenWidth - 48) }]}>
+            <Ionicons name="lock-closed-outline" size={20} color="rgba(255,255,255,0.5)" style={styles.inputIcon} />
             <TextInput
+              ref={passwordRef}
               style={styles.input}
               placeholder="Password"
               placeholderTextColor="rgba(255,255,255,0.5)"
               value={password}
               onChangeText={setPassword}
               secureTextEntry={!showPassword}
+              returnKeyType="done"
+              textContentType="password"
+              autoComplete="password"
+              onSubmitEditing={handleSignIn}
             />
-            <TouchableOpacity
-              onPress={() => setShowPassword(!showPassword)}
-              style={styles.eyeIcon}
-            >
-              <Ionicons
-                name={showPassword ? "eye-outline" : "eye-off-outline"}
-                size={20}
-                color="rgba(255,255,255,0.5)"
-              />
+            <TouchableOpacity onPress={() => setShowPassword(!showPassword)} style={styles.eyeIcon}>
+              <Ionicons name={showPassword ? "eye-outline" : "eye-off-outline"} size={20} color="rgba(255,255,255,0.5)" />
             </TouchableOpacity>
           </View>
 
@@ -100,7 +124,7 @@ export function SignIn({ onNavigateToSignUp }: { onNavigateToSignUp?: () => void
             </TouchableOpacity>
           </View>
 
-          <TouchableOpacity onPress={() => onNavigateToSignUp && onNavigateToSignUp()} activeOpacity={0.9}>
+          <TouchableOpacity onPress={handleSignIn} activeOpacity={0.9} disabled={loading}>
             <LinearGradient
               colors={["#7B6CF6", "#C86DD7", "#2EC6C6"]}
               start={{ x: 0, y: 0 }}
@@ -110,7 +134,7 @@ export function SignIn({ onNavigateToSignUp }: { onNavigateToSignUp?: () => void
                 { width: Math.min(520, screenWidth - 48) },
               ]}
             >
-              <Text style={styles.signInButtonText}>Sign Up</Text>
+              <Text style={styles.signInButtonText}>{loading ? "Signing In..." : "Sign In"}</Text>
             </LinearGradient>
           </TouchableOpacity>
 
@@ -148,8 +172,9 @@ export function SignIn({ onNavigateToSignUp }: { onNavigateToSignUp?: () => void
             <Text style={styles.signUpLink}>Sign Up</Text>
           </TouchableOpacity>
         </View>
-      </View>
-    </View>
+        </View>
+      </KeyboardAvoidingView>
+    </TouchableWithoutFeedback>
   );
 }
 
