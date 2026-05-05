@@ -6,6 +6,7 @@ import { SignIn } from "./src/screens/signIn";
 import { SignUp } from "./src/screens/SignUp";
 import { SplashScreen } from "./src/screens/SplashScreen";
 import { Verify } from "./src/screens/Verify";
+import { Dashboard } from "./src/screens/Dashboard";
 
 const styles = StyleSheet.create({
   safeArea: {
@@ -16,7 +17,7 @@ const styles = StyleSheet.create({
 
 export default function App() {
   const [currentScreen, setCurrentScreen] = useState<
-    "splash" | "signin" | "signup" | "verify"
+    "splash" | "signin" | "signup" | "verify" | "dashboard"
   >("splash");
   const [verifyEmail, setVerifyEmail] = useState("");
 
@@ -35,14 +36,16 @@ export default function App() {
             setCurrentScreen("verify");
           }}
         />
-      ) : (
+      ) : currentScreen === "verify" ? (
         <Verify
           email={verifyEmail}
           onNavigateToSignIn={() => setCurrentScreen("signin")}
           onNavigateToHome={() => {
-            setCurrentScreen("signin");
+            setCurrentScreen("dashboard");
           }}
         />
+      ) : (
+        <Dashboard onSignOut={() => setCurrentScreen("signin")} />
       )}
     </SafeAreaView>
   );
