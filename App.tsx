@@ -46,6 +46,7 @@ export default function App() {
             setVerifyEmail(email);
             setCurrentScreen("verify");
           }}
+          onBack={() => setCurrentScreen("signin")}
         />
       ) : currentScreen === "verify" ? (
         <Verify

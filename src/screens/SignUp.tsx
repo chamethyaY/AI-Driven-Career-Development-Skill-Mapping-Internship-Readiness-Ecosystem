@@ -19,9 +19,11 @@ import {
 export function SignUp({
   onNavigateToSignIn,
   onNavigateToVerify,
+  onBack,
 }: {
   onNavigateToSignIn?: () => void;
   onNavigateToVerify?: (email: string) => void;
+  onBack?: () => void;
 }) {
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
@@ -124,6 +126,9 @@ export function SignUp({
         style={styles.container}
         behavior={Platform.OS === "ios" ? "padding" : undefined}
       >
+        <TouchableOpacity onPress={() => onBack?.()} style={styles.backButton} accessibilityLabel="Back">
+          <Ionicons name="arrow-back" size={28} color="#FFFFFF" />
+        </TouchableOpacity>
       <View style={styles.content}>
         <View style={styles.topIconWrap}>
           <View style={styles.iconShadow} />
@@ -410,5 +415,12 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: "700",
     color: "#7B6CF6",
+  },
+  backButton: {
+    position: "absolute",
+    top: 24,
+    left: 12,
+    zIndex: 30,
+    padding: 8,
   },
 });
