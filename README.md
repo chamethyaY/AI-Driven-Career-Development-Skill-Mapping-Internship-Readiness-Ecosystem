@@ -4,7 +4,7 @@
 
 ### *The AI-Powered Career Operating System for Student Developers*
 
-<img src="./assets/banner.png" alt="CareerForge Banner" width="1500" height="1000" />
+<img src="./assets/banner.png" alt="CareerForge Banner" width="1200" height="800" />
 
 <br/>
 
@@ -75,17 +75,27 @@ A 4-step personalisation flow that runs once for new users. Every answer drives 
 
 ##  Internship Readiness Score
 
-A dynamic score calculated from real activity — not just time spent.
+A dynamic score calculated from the user's actual skill progress in the platform.
 
 ```text
-Score = (Skills Completed × 35%) + (Projects Built × 30%) + (Consistency × 20%) + (Depth × 15%)
+Internship Readiness Score = (skills_done / total_skills) × 100
 ```
+
+Example:
+
+```text
+If a user completed 45 skills out of 60 total skills:
+
+(45 / 60) × 100 = 75%
+```
+
+The score updates in real time whenever a user completes or removes a skill.
 
 The label and colour adapt to the user's goal:
 
-- **Internship** → "Internship Readiness" — weights skills and projects highest
-- **Build Skills** → "Skill Mastery" — weights depth and consistency
-- **Career Switch** → "Career Transition" — weights foundations and projects
+- **Internship** → "Internship Readiness"
+- **Build Skills** → "Skill Mastery"
+- **Career Switch** → "Career Transition"
 
 ---
 
@@ -164,7 +174,7 @@ The personalised home screen that brings everything together.
 
 ---
 
-#  Architecture
+# Architecture
 
 ```text
 ┌────────────────────────────────────────────────────────────────┐
@@ -485,5 +495,5 @@ MIT License — see [LICENSE](LICENSE) for details.
 ---
 
 <div align="center">
-  <sub>Built with ❤️ by Chamethya Yasodie</sub>
+  <sub>Built  by Chamethya Yasodie</sub>
 </div>
