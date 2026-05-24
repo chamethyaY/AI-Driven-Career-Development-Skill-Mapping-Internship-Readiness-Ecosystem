@@ -1,49 +1,51 @@
 <div align="center">
 
+<img src="https://img.shields.io/badge/React_Native-20232A?style=for-the-badge&logo=react&logoColor=61DAFB" />
+<img src="https://img.shields.io/badge/Expo-000020?style=for-the-badge&logo=expo&logoColor=white" />
+<img src="https://img.shields.io/badge/Supabase-3ECF8E?style=for-the-badge&logo=supabase&logoColor=white" />
+<img src="https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white" />
+<img src="https://img.shields.io/badge/Gemini_AI-8E75B2?style=for-the-badge&logo=google&logoColor=white" />
+
 <br/><br/>
 
 # CareerForge
 
 ### *The AI-Powered Career Operating System for Student Developers*
 
-<br/>
-
 <img src="./assets/banner.png" alt="CareerForge Banner" width="90%" />
 
-<br/><br/>
+<br/>
 
-> **CareerForge transforms students into internship-ready developers** through personalised AI roadmaps, structured skill tracking, intelligent project guidance, and real-time career intelligence — all in one cross-platform mobile app.
+> **CareerForge transforms students into internship-ready developers** through personalised AI guidance, structured skill tracking, curated learning resources, and a 24/7 AI career mentor — all in one cross-platform mobile app.
 
 <br/>
 
-[Features](#-features) • [Tech Stack](#-tech-stack) • [Architecture](#-architecture) • [Database](#-database-design) • [Getting Started](#-getting-started) • [Screens](#-screens)
+[Features](#-features) • [Tech Stack](#-tech-stack) • [Architecture](#-architecture) • [Database](#-database-design) • [Screens](#-screens) • [Getting Started](#-getting-started)
 
 </div>
 
 ---
 
-## The Problem
+# The Problem
 
 Most CS students face the same painful cycle:
 
-> *"I've done the tutorials. I've watched the YouTube videos. But I don't know what to build, what skills actually matter, or if I'm actually ready for internships."*
+> *"I've done the tutorials. I've watched the YouTube videos. But I don't know what skills actually matter, what to build, or if I'm actually ready for internships."*
 
 Generic learning platforms teach syntax — not careers. Students are left guessing:
 
 - Which skills do real internships actually require?
-- What projects will stand out to recruiters?
+- What should I focus on next?
 - Am I ready to apply — or am I wasting my time?
 
----
-
-## The Solution
+# The Solution
 
 **CareerForge** closes the gap between *learning* and *landing your first internship*.
 
-It acts as a **personal career mentor that's always available** — generating personalised roadmaps based on your goals, recommending portfolio-worthy projects filtered to your tech interests, tracking your progress with a live readiness score, and giving you AI-powered guidance so you know exactly what to do next.
+It acts as a **personal career mentor that's always available** — tracking your skills, curating personalised learning resources, giving you AI-powered guidance, and showing you a live readiness score so you always know exactly where you stand.
 
 ```text
-Smart Onboarding → Personalised Roadmap → Skill Tracking → Internship Readiness
+Smart Onboarding → Skill Tracking → AI-Curated Learning → Forge AI Mentor → Internship Ready
 ```
 
 ---
@@ -56,108 +58,97 @@ A complete, production-grade auth flow built on Supabase Auth.
 
 - Email + OTP verification on sign up
 - Secure session management with automatic token refresh
-- Smart routing — new users go through onboarding, returning users land directly on their dashboard
-- Sign out clears the device session only — all profile data and progress persists in the database forever
-- Row Level Security enforces data isolation at the database level, not just the application layer
+- Smart routing — new users go through onboarding, returning users go straight to dashboard
+- Sign out clears the device session only — all data stays in the database forever
+- Row Level Security enforces data isolation at the database level, not just application level
 
 ---
 
 ##  Smart Onboarding
 
-A 4-step personalisation flow that runs once for new users. Every answer is saved to Supabase and drives every feature in the app.
+A 4-step personalisation flow that runs once for new users. Every answer drives personalisation across the entire app.
 
 | Step | What we capture | How it personalises the app |
 |------|----------------|----------------------------|
-| Primary goal | internship / build skills / career switch | Changes readiness score label, weighting, and targets |
-| Current level | beginner / intermediate / advanced | Sets starting point in skill tree, adjusts AI recommendations |
-| Role interests | frontend / backend / mobile / devops / AI | Filters project recommendations and skill roadmap |
-| Time commitment | casual / regular / intensive | Shapes weekly learning targets and AI pacing |
+| Primary goal | internship / build skills / career switch | Changes readiness score label, weights, and targets |
+| Current level | beginner / intermediate / advanced | Sets skill tree starting point, adjusts AI advice |
+| Role interests | frontend / backend / mobile / devops / AI | Filters skill tree order, learn resources, AI context |
+| Time commitment | casual / regular / intensive | Shapes AI pacing and weekly targets |
 
 ---
 
 ##  Internship Readiness Score
 
-A dynamic, data-driven score that reflects real progress — not just activity.
+A dynamic score calculated from real activity — not just time spent.
 
 ```text
-Score = (Skills Completed × 35%) + (Projects Built × 30%) + (Consistency × 20%) + (Technical Depth × 15%)
+Score = (Skills Completed × 35%) + (Projects Built × 30%) + (Consistency × 20%) + (Depth × 15%)
 ```
 
-The score adapts based on the user's goal:
+The label and colour adapt to the user's goal:
 
-- **Internship** → "Internship Readiness"
-- **Build Skills** → "Skill Mastery"
-- **Career Switch** → "Career Transition"
+- **Internship** → "Internship Readiness" — weights skills and projects highest
+- **Build Skills** → "Skill Mastery" — weights depth and consistency
+- **Career Switch** → "Career Transition" — weights foundations and projects
 
 ---
 
-##  Skill Progression System
+##  Skill Profile
 
 An interactive skill tree covering every major development domain.
 
-- Beginner → Intermediate → Advanced progression per domain
 - Domains: Frontend, Backend, Mobile, DevOps, AI/ML
-- Every completed skill updates the readiness score in real time
-- Progress bars per domain showing exactly how far along each track the user is
-- Confidence indicators: Confident / Learning / Locked
+- User's selected role domains appear first with a "Your focus" badge
+- Tap any skill to mark it done → saved instantly to Supabase
+- Domain progress bars update live as skills are ticked
+- Overall percentage recalculates in real time
+- Skills feed directly into the readiness score and AI context
 
 ---
 
-##  Project Recommendation Engine
+##  Learn Screen
 
-Personalised project recommendations filtered by the user's role interests and skill level.
+Shows exactly what to learn next based on the user's real skill progress.
 
-Every recommended project includes:
-
-- Full feature breakdown with scope guidance
-- Suggested tech stack matched to the user's current level
-- Complexity rating to keep users challenged without being overwhelmed
-- CV impact score — how much this project will actually impress a recruiter
-
----
-
-##  Forge AI — Career Intelligence
-
-A 24/7 AI career mentor powered by Google's **Gemini 2.5 Flash** model using the **Generative Language API (v1beta)**.
-
-Forge AI knows the user's:
-- Goal
-- Skill level
-- Role interests
-- Current progress
-
-So every response is genuinely personalised.
-
-### Features
-
-- Generates personalised career roadmaps on demand
-- Answers "What should I learn next?"
-- Identifies skill gaps
-- Gives internship-focused guidance
-- Provides one focused daily insight every 24 hours
-
-### AI Model
-
-CareerForge uses **Gemini 2.5 Flash** through Google's **Generative Language API (v1beta)** for:
-
-- Personalised roadmap generation
-- Career mentoring
-- Skill gap analysis
-- Learning recommendations
-- Project guidance
+- "Continue where you left off" card — first unticked skill in the user's selected domain
+- Full learning roadmap per domain — done  / current  / not started
+- AI-generated resources per skill via Gemini API — YouTube tutorials, official docs, freeCodeCamp, practice sites
+- Resources generated once per skill, cached permanently in Supabase — no repeated API calls
+- All resources are free — links open in browser or YouTube app with one tap
+- Resources personalised to the user's level (beginner gets different links than intermediate)
 
 ---
 
-##  Portfolio Generator
+##  Forge AI — Career Mentor Chat
 
-The AI transforms completed projects into professional assets ready to use immediately.
+A 24/7 AI career mentor powered by Gemini AI, running securely via Supabase Edge Functions.
 
-### Generates
+- Personalised welcome message using the user's real name, goal, level, and skill count
+- Free text input — user types anything in their own words, no restrictions
+- System prompt built from the user's Supabase profile before every conversation — AI already knows who they are
+- Quick prompt chips on first open:
+  - "What should I learn next?"
+  - "What projects should I build?"
+  - "How ready am I?"
+  - "Review my skill gaps"
+- Chips disappear after first message — conversation flows naturally from there
+- Typing indicator while Gemini generates the response
+- Full chat history persisted in Supabase — conversation continues where the user left off
+- Gemini API called server-side via Supabase Edge Functions — API key never exposed to the client
+- Uses **gemini-2.5-flash** with the **Google Generative Language API v1beta**
 
-- GitHub repository descriptions
-- STAR-format CV bullet points
-- LinkedIn summaries
-- Recruiter-focused project writeups
+---
+
+##  Dashboard
+
+The personalised home screen that brings everything together.
+
+- Time-aware greeting using the user's name from Supabase Auth
+- Internship readiness score with animated progress bar — label and colour adapt by goal
+- Live stats row — streak days, skills completed, projects built
+- Quick action tiles — Continue Learning, View Roadmap, Chat with AI, Projects
+- Forge AI daily insight card with personalised tip
+- Bottom navigation bar persisting across all screens
 
 ---
 
@@ -165,128 +156,147 @@ The AI transforms completed projects into professional assets ready to use immed
 
 | Layer | Technology | Purpose |
 |-------|-----------|---------|
-| Mobile | React Native + Expo | Cross-platform iOS & Android |
-| Language | TypeScript | Full type safety |
-| Navigation | Expo Router | File-based routing |
-| Backend | Supabase | Auth + Database |
-| Database | PostgreSQL | Relational database |
-| Authentication | Supabase Auth | OTP + JWT sessions |
-| AI Engine | Gemini 2.5 Flash (Google AI) | Career intelligence |
-| Icons | @expo/vector-icons | UI icons |
-| Styling | React Native StyleSheet | Consistent design system |
+| Mobile | React Native + Expo | Cross-platform iOS & Android from one codebase |
+| Language | TypeScript | Full type safety across all screens and services |
+| Navigation | Expo Router | File-based routing with tab and stack navigation |
+| Backend | Supabase | Auth, PostgreSQL database, real-time, edge functions |
+| Database | PostgreSQL via Supabase | Relational data with Row Level Security on every table |
+| Authentication | Supabase Auth | Email + OTP, JWT session management |
+| AI Engine | Google Gemini API (`gemini-2.5-flash`) | Chat responses, skill resource generation |
+| AI Gateway | Supabase Edge Functions | Server-side Gemini calls — key never touches the client |
+| Icons | Expo Vector Icons (Ionicons) | UI icons throughout |
 
 ---
 
-#  Architecture
+# 🏗 Architecture
 
 ```text
-┌──────────────────────────────────────────────────────────────┐
-│                    CareerForge Mobile App                   │
-│               React Native · Expo · TypeScript              │
-├─────────────┬──────────────────┬───────────────┬────────────┤
-│  Auth &     │   Dashboard &    │  Skill Tree & │  AI Layer  │
-│  Onboarding │   Readiness      │  Projects     │  Forge AI  │
-│  Routing    │   Score          │  Portfolio    │  Roadmaps  │
-└──────┬──────┴────────┬─────────┴───────┬───────┴─────┬──────┘
-       │               │                 │             │
-       ▼               ▼                 ▼             ▼
-┌──────────────────────────────────────────────────────────────┐
-│                         Supabase                            │
-│         Auth · PostgreSQL · Row Level Security              │
-│                                                              │
-│   user_profiles · skill_progress · user_projects            │
-│   daily_activity · ai_insights                              │
-└───────────────────────────────────────┬──────────────────────┘
-                                        │
-                                        ▼
-                          ┌─────────────────────────┐
-                          │    Gemini 2.5 Flash    │
-                          │ Generative Language API │
-                          │        (v1beta)         │
-                          └─────────────────────────┘
+┌────────────────────────────────────────────────────────────────┐
+│                    CareerForge Mobile App                     │
+│               React Native · Expo · TypeScript                │
+├─────────────┬──────────────────┬──────────────┬───────────────┤
+│  Auth &     │   Dashboard &    │  Skills &    │  Forge AI     │
+│  Onboarding │   Readiness      │  Learn       │  Chat         │
+│  Routing    │   Score          │  Resources   │  Mentor       │
+└──────┬──────┴────────┬─────────┴──────┬───────┴──────┬────────┘
+       │               │                │              │
+       ▼               ▼                ▼              ▼
+┌────────────────────────────────────────────────────────────────┐
+│                        Supabase                                │
+│          Auth · PostgreSQL · RLS · Edge Functions             │
+│                                                                │
+│  user_profiles · skill_progress · chat_messages               │
+│  skill_resources · daily_activity                             │
+└──────────────────────────────────────┬─────────────────────────┘
+                                       │
+                                       ▼
+                         ┌───────────────────────────┐
+                         │   Supabase Edge Functions │
+                         │   dynamic-task            │
+                         │   get-skill-materials     │
+                         └─────────────┬─────────────┘
+                                       │
+                                       ▼
+                         ┌───────────────────────────┐
+                         │    Google Gemini API      │
+                         │    gemini-2.5-flash       │
+                         │  Career chat + Resources  │
+                         └───────────────────────────┘
 ```
 
 ---
 
 #  Database Design
 
-CareerForge uses **Supabase (PostgreSQL)** with Row Level Security enabled on every table.
+CareerForge uses Supabase (PostgreSQL) with Row Level Security on every table.
 
-## Tables
+Users can only ever read and write their own data — enforced at the database level.
 
 ```sql
--- Core profile
+-- Core profile — saved once at onboarding
 user_profiles (
-  id uuid references auth.users PRIMARY KEY,
-  goal text,
-  level text,
-  roles text[],
+  id              uuid references auth.users PRIMARY KEY,
+  goal            text,
+  level           text,
+  roles           text[],
   time_commitment text,
   onboarding_completed boolean default false,
-  created_at timestamptz default now()
+  created_at      timestamptz default now()
 )
 
--- Skill activity
+-- Skill activity — one row per ticked skill
 skill_progress (
-  id uuid PRIMARY KEY,
-  user_id uuid references auth.users,
-  skill_id text,
-  status text,
-  completed_at timestamptz
+  id           uuid PRIMARY KEY,
+  user_id      uuid references auth.users,
+  skill_id     text,
+  status       text,
+  completed_at timestamptz,
+  unique(user_id, skill_id)
 )
 
--- Projects
-user_projects (
-  id uuid PRIMARY KEY,
-  user_id uuid references auth.users,
-  title text,
-  stack text,
-  status text,
-  built_at timestamptz
+-- AI Chat history — one row per message
+chat_messages (
+  id         uuid PRIMARY KEY,
+  user_id    uuid references auth.users,
+  role       text,
+  content    text,
+  created_at timestamptz
 )
 
--- Daily streaks
+-- Skill resources cache — generated once by Gemini, reused forever
+skill_resources (
+  id             uuid PRIMARY KEY,
+  skill_id       text not null,
+  title          text not null,
+  resource_type  text,
+  url            text not null unique,
+  provider       text,
+  created_at     timestamptz
+)
+
+-- Streak tracking — one row per day app is opened
 daily_activity (
-  id uuid PRIMARY KEY,
+  id      uuid PRIMARY KEY,
   user_id uuid references auth.users,
-  date date
-)
-
--- AI insights cache
-ai_insights (
-  id uuid PRIMARY KEY,
-  user_id uuid references auth.users,
-  tip text,
-  generated_at timestamptz
+  date    date,
+  unique(user_id, date)
 )
 ```
+
+All tables have Row Level Security enabled with policies scoped to `auth.uid()`.
 
 ---
 
 #  Screens
 
-| Screen | Description |
-|--------|-------------|
-| Login | User authentication |
-| Sign Up | OTP verification |
-| Onboarding | Personalisation flow |
-| Dashboard | Main overview screen |
-| Skills | Skill tracking |
-| Learn | Learning roadmap |
-| AI Chat | Forge AI mentor |
-| Projects | AI-generated project ideas |
-| Portfolio Generator | AI CV + LinkedIn export |
+| Screen | What it does | Uses AI |
+|--------|-------------|---------|
+| Sign Up | Email + OTP verification via Supabase Auth | No |
+| Sign In | Password login, routes to onboarding or dashboard | No |
+| Onboarding | 4-step goal, level, roles, time flow — saves to Supabase | No |
+| Dashboard | Readiness score, stats, quick actions, AI insight tip | Cached tip |
+| Skill Profile | Tap to tick/untick skills — saves to Supabase in real time | No |
+| Learn | Next skill card + roadmap + curated resources per skill | Gemini (cached) |
+| AI Chat | Full conversational Forge AI career mentor | Gemini (live) |
 
 ---
 
-#  Getting Started
+# 🚀 Getting Started
 
 ## Prerequisites
 
-- Node.js >= 18
+- Node.js `>=18.x`
 - Expo CLI
-- Supabase account
-- Google AI Studio API key
+
+```bash
+npm install -g expo-cli
+```
+
+- Supabase account:
+  https://supabase.com
+
+- Google AI Studio:
+  https://aistudio.google.com
 
 ---
 
@@ -298,25 +308,123 @@ git clone https://github.com/chamethyaY/careerforge.git
 cd careerforge
 
 npm install
+
+cp .env.example .env
 ```
 
 ---
 
 ## Environment Variables
 
-Create a `.env` file:
-
 ```env
-EXPO_PUBLIC_SUPABASE_URL=your_supabase_url
-
+EXPO_PUBLIC_SUPABASE_URL=your_supabase_project_url
 EXPO_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
-
 EXPO_PUBLIC_GEMINI_API_KEY=your_gemini_api_key
 ```
 
 ---
 
-#  Run The App
+## Supabase Setup
+
+Run this inside the Supabase SQL Editor:
+
+```sql
+create table user_profiles (
+  id uuid references auth.users primary key,
+  goal text,
+  level text,
+  roles text[],
+  time_commitment text,
+  onboarding_completed boolean default false,
+  created_at timestamptz default now()
+);
+
+create table skill_progress (
+  id uuid default gen_random_uuid() primary key,
+  user_id uuid references auth.users,
+  skill_id text,
+  status text default 'done',
+  completed_at timestamptz default now(),
+  unique(user_id, skill_id)
+);
+
+create table chat_messages (
+  id uuid default gen_random_uuid() primary key,
+  user_id uuid references auth.users,
+  role text,
+  content text,
+  created_at timestamptz default now()
+);
+
+create table skill_resources (
+  id uuid default gen_random_uuid() primary key,
+  skill_id text not null,
+  title text not null,
+  resource_type text,
+  url text not null unique,
+  provider text,
+  created_at timestamptz default now()
+);
+
+alter table user_profiles enable row level security;
+alter table skill_progress enable row level security;
+alter table chat_messages enable row level security;
+alter table skill_resources enable row level security;
+
+create policy "own profile"
+on user_profiles
+for all
+using (auth.uid() = id)
+with check (auth.uid() = id);
+
+create policy "own skills"
+on skill_progress
+for all
+using (auth.uid() = user_id)
+with check (auth.uid() = user_id);
+
+create policy "own messages"
+on chat_messages
+for all
+using (auth.uid() = user_id)
+with check (auth.uid() = user_id);
+
+create policy "read resources"
+on skill_resources
+for select
+using (auth.role() = 'authenticated');
+```
+
+---
+
+## Supabase Edge Functions
+
+The Gemini API is called server-side to keep the API key secure.
+
+Add your key to Supabase secrets:
+
+```text
+Supabase Dashboard → Edge Functions → Secrets → Add GEMINI_API_KEY
+```
+
+---
+
+## Gemini API Configuration
+
+CareerForge uses:
+
+- `gemini-2.5-flash`
+- Google Generative Language API (`v1beta`)
+
+Example endpoint:
+
+```text
+https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent
+```
+
+---
+
+## Run the App
 
 ```bash
 npx expo start
@@ -333,70 +441,53 @@ careerforge/
 │   ├── login.tsx
 │   ├── onboarding.tsx
 │   └── (tabs)/
-│       ├── dashboard.tsx
+│       ├── index.tsx
 │       ├── learn.tsx
 │       ├── skills.tsx
 │       └── ai-chat.tsx
-│
-├── components/
-│   ├── onboarding/
-│   ├── dashboard/
-│   └── shared/
-│
-├── lib/
-│   ├── supabase.ts
-│   └── scoring.ts
-│
-├── hooks/
-│   ├── useAuth.ts
-│   └── useProfile.ts
-│
-└── constants/
-    ├── skills.ts
-    └── theme.ts
+├── src/
+│   ├── lib/
+│   │   ├── supabase.ts
+│   │   ├── geminiChat.ts
+│   │   └── skillResources.ts
+│   └── constants/
+│       └── skills.ts
+├── supabase/
+│   └── functions/
+│       ├── dynamic-task/
+│       └── get-skill-materials/
+└── .env
 ```
 
 ---
 
 #  Security
 
-- Row Level Security enabled on every table
-- JWT session management
-- OTP email verification
-- Environment variables for all secrets
-- Secure Supabase authentication flow
+- Row Level Security on every Supabase table
+- JWT tokens managed by Supabase Auth with automatic refresh
+- Gemini API key stored in Supabase Edge Function secrets
+- Environment variables for all client-side config
+- OTP email verification on sign up
 
 ---
 
 #  Author
 
-## Chamethya Yasodie
+**Chamethya Yasodie**  
+Full-Stack Developer · BSc Computer Science · University of Westminster (IIT Colombo)
 
-- Full-Stack Developer
-- BSc Computer Science
-- University of Westminster (IIT Colombo)
-
-### Links
-
-GitHub:  
-https://github.com/chamethyaY
-
-LinkedIn:  
-https://www.linkedin.com/in/chamethya-yasodie-a8278a349/
-
-Email:  
-k.chamethya@gmail.com
+- GitHub: https://github.com/chamethyaY
+- LinkedIn: https://www.linkedin.com/in/chamethya-yasodie-a8278a349/
+- Email: k.chamethya@gmail.com
 
 ---
 
-#  License
+# 📄 License
 
-MIT License
+MIT License — see [LICENSE](LICENSE) for details.
 
 ---
 
 <div align="center">
-
-Built by Chamethya Yasodie
-
+  <sub>Built with ❤️ by Chamethya Yasodie</sub>
 </div>
