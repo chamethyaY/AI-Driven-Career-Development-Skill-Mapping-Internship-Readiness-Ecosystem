@@ -1,22 +1,18 @@
 <div align="center">
 
-<img src="https://img.shields.io/badge/React_Native-20232A?style=for-the-badge&logo=react&logoColor=61DAFB" />
-<img src="https://img.shields.io/badge/Expo-000020?style=for-the-badge&logo=expo&logoColor=white" />
-<img src="https://img.shields.io/badge/Supabase-3ECF8E?style=for-the-badge&logo=supabase&logoColor=white" />
-<img src="https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white" />
-<img src="https://img.shields.io/badge/Gemini_AI-8E75B2?style=for-the-badge&logo=google&logoColor=white" />
-
-<br/><br/>
-
 # CareerForge
 
 ### *The AI-Powered Career Operating System for Student Developers*
 
-<img src="./assets/banner.png" alt="CareerForge Banner" width="90%" />
+<img src="./assets/banner.png" alt="CareerForge Banner" width="98%" />
 
 <br/>
 
 > **CareerForge transforms students into internship-ready developers** through personalised AI guidance, structured skill tracking, curated learning resources, and a 24/7 AI career mentor — all in one cross-platform mobile app.
+
+<br/>
+
+**Built With:** React Native · Expo · TypeScript · Supabase · PostgreSQL · Gemini AI
 
 <br/>
 
@@ -111,7 +107,7 @@ An interactive skill tree covering every major development domain.
 Shows exactly what to learn next based on the user's real skill progress.
 
 - "Continue where you left off" card — first unticked skill in the user's selected domain
-- Full learning roadmap per domain — done  / current  / not started
+- Full learning roadmap per domain — done ✅ / current 🔵 / not started
 - AI-generated resources per skill via Gemini API — YouTube tutorials, official docs, freeCodeCamp, practice sites
 - Resources generated once per skill, cached permanently in Supabase — no repeated API calls
 - All resources are free — links open in browser or YouTube app with one tap
@@ -168,7 +164,7 @@ The personalised home screen that brings everything together.
 
 ---
 
-# 🏗 Architecture
+#  Architecture
 
 ```text
 ┌────────────────────────────────────────────────────────────────┐
@@ -281,7 +277,7 @@ All tables have Row Level Security enabled with policies scoped to `auth.uid()`.
 
 ---
 
-# 🚀 Getting Started
+#  Getting Started
 
 ## Prerequisites
 
@@ -482,7 +478,7 @@ Full-Stack Developer · BSc Computer Science · University of Westminster (IIT C
 
 ---
 
-# 📄 License
+#  License
 
 MIT License — see [LICENSE](LICENSE) for details.
 
