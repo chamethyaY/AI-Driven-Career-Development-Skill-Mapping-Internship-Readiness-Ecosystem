@@ -91,12 +91,6 @@ If a user completed 45 skills out of 60 total skills:
 
 The score updates in real time whenever a user completes or removes a skill.
 
-The label and colour adapt to the user's goal:
-
-- **Internship** → "Internship Readiness"
-- **Build Skills** → "Skill Mastery"
-- **Career Switch** → "Career Transition"
-
 ---
 
 ##  Skill Profile
