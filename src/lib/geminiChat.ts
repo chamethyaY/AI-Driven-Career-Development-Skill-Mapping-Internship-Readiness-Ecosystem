@@ -1,3 +1,5 @@
+import { supabase } from "../services/supabase";
+
 const SUPABASE_URL = process.env.EXPO_PUBLIC_SUPABASE_URL ?? "";
 const SUPABASE_ANON_KEY = process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY ?? "";
 
@@ -6,10 +8,11 @@ console.log(
   "API KEY BEING USED:",
   process.env.EXPO_PUBLIC_GEMINI_API_KEY?.slice(0, 20),
 );
-const GEMINI_MODEL = "gemini-1.5-flash-8b";
-const GEMINI_URL = GEMINI_API_KEY
-  ? `https://generativelanguage.googleapis.com/v1/models/${GEMINI_MODEL}:generateText?key=${GEMINI_API_KEY}`
-  : "";
+const CLIENT_FALLBACK_MODELS = [
+  "gemini-2.5-flash",
+  "gemini-2.0-flash",
+  "gemini-1.5-flash",
+];
 
 export type Message = {
   role: "user" | "assistant";
@@ -43,17 +46,32 @@ export const sendToGemini = async (
   messages: Message[],
   systemPrompt: string,
 ): Promise<string> => {
+  const contents = messages.map((m) => ({
+    role: m.role === "assistant" ? "model" : "user",
+    parts: [{ text: m.content }],
+  }));
+
   // Try server-side first
   try {
     if (!SUPABASE_URL || !SUPABASE_ANON_KEY)
       throw new Error("Missing Supabase env");
+
+    const {
+      data: { session },
+    } = await supabase.auth.getSession();
+    const accessToken = session?.access_token;
+
+    if (!accessToken) {
+      throw new Error("Missing user session token for edge function auth");
+    }
+
     const fnUrl = `${SUPABASE_URL.replace(/\/$/, "")}/functions/v1/dynamic-task`;
     const resp = await fetch(fnUrl, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
         apikey: SUPABASE_ANON_KEY,
-        Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
+        Authorization: `Bearer ${accessToken}`,
       },
       body: JSON.stringify({ messages, systemPrompt }),
     });
@@ -82,29 +100,19 @@ export const sendToGemini = async (
     return `Sorry — AI chat is temporarily unavailable. The app is configured to use a server-side AI (recommended). Please deploy the server function or enable a public Gemini key for a temporary fallback. Quick tip for "${lastUser}": check the Learn tab for resources.`;
   }
 
-  const convoLines = messages.map((m) =>
-    m.role === "assistant" ? `Assistant: ${m.content}` : `User: ${m.content}`,
-  );
-  const promptText = `${systemPrompt}\n\nConversation:\n${convoLines.join("\n")}`;
-  const contents = messages.map((m) => ({
-    role: m.role === "assistant" ? "model" : "user",
-    parts: [{ text: m.content }],
-  }));
-
-  const maxRetries = 3;
-  let attempt = 0;
   let lastErrorBody: any = null;
-
-  while (attempt < maxRetries) {
-    attempt += 1;
+  for (const modelName of CLIENT_FALLBACK_MODELS) {
     try {
-      const response = await fetch(GEMINI_URL, {
+      const url = `https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent?key=${GEMINI_API_KEY}`;
+      console.log("Trying client fallback URL:", url.slice(0, 120));
+
+      const response = await fetch(url, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          prompt: { text: promptText },
-          temperature: 0.7,
-          maxOutputTokens: 300,
+          system_instruction: { parts: [{ text: systemPrompt }] },
+          contents,
+          generationConfig: { maxOutputTokens: 300, temperature: 0.7 },
         }),
       });
 
@@ -116,15 +124,11 @@ export const sendToGemini = async (
       }
 
       if (response.ok) {
-        const data =
-          typeof lastErrorBody === "string"
-            ? JSON.parse(textBody)
-            : lastErrorBody;
         const candidateText =
-          data?.candidates?.[0]?.content?.parts?.[0]?.text ||
-          data?.output?.[0]?.content?.[0]?.text ||
-          data?.text ||
-          (typeof data === "string" ? data : null);
+          lastErrorBody?.candidates?.[0]?.content?.parts?.[0]?.text ||
+          lastErrorBody?.output?.[0]?.content?.[0]?.text ||
+          lastErrorBody?.text ||
+          (typeof lastErrorBody === "string" ? lastErrorBody : null);
         if (candidateText) return candidateText;
       }
 
@@ -136,73 +140,17 @@ export const sendToGemini = async (
         return `Sorry — the AI service quota has been reached: ${String(userMsg).slice(0, 200)}. Please try again later or check the Learn tab for resources.`;
       }
 
-      if (response.status === 403 || response.status === 404) {
-        // Try older v1beta generateContent endpoint as a fallback for keys
-        // that don't support v1 generateText for this model.
-        try {
-          const altUrl = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent?key=${GEMINI_API_KEY}`;
-          console.log("Trying client fallback URL:", altUrl.slice(0, 120));
-          const retryResp = await fetch(altUrl, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              system_instruction: { parts: [{ text: systemPrompt }] },
-              contents,
-              generationConfig: { maxOutputTokens: 300, temperature: 0.7 },
-            }),
-          });
-
-          const retryText = await retryResp.text().catch(() => "");
-          let retryBody: any = null;
-          try {
-            retryBody = JSON.parse(retryText);
-          } catch {
-            retryBody = retryText;
-          }
-          console.log("Fallback response status:", retryResp.status);
-          if (retryResp.ok) {
-            const candidateText =
-              retryBody?.candidates?.[0]?.content?.parts?.[0]?.text ||
-              retryBody?.output?.[0]?.content?.text ||
-              (typeof retryBody === "string" ? retryBody : null);
-            if (candidateText) return candidateText;
-          }
-          console.warn(
-            "Fallback call failed:",
-            retryResp.status,
-            JSON.stringify(retryBody).slice?.(0, 300),
-          );
-        } catch (fbE) {
-          console.warn(
-            "Fallback attempt error:",
-            fbE instanceof Error ? fbE.message : String(fbE),
-          );
-        }
-
-        const modelMsg =
-          typeof lastErrorBody === "string"
-            ? lastErrorBody
-            : JSON.stringify(lastErrorBody?.error ?? lastErrorBody);
-        return `Sorry — the configured model (${GEMINI_MODEL}) or API method isn't available for this key or API version: ${String(modelMsg).slice(0, 200)}. Ensure your key has access to ${GEMINI_MODEL} or deploy the server function with a valid server-side key.`;
-      }
-
-      // other non-OK: throw to trigger retry/backoff
-      throw new Error(
-        `Gemini failed: ${response.status} - ${JSON.stringify(lastErrorBody)}`,
+      console.warn(
+        `Client fallback model failed (${modelName}):`,
+        response.status,
+        JSON.stringify(lastErrorBody).slice?.(0, 300),
       );
     } catch (e) {
-      console.error(
-        `Gemini attempt ${attempt} error:`,
-        e instanceof Error ? e.message : String(e),
+      lastErrorBody = e instanceof Error ? e.message : String(e);
+      console.warn(
+        `Client fallback request error (${modelName}):`,
+        String(lastErrorBody),
       );
-      if (attempt >= maxRetries) {
-        const lastUser =
-          [...messages].reverse().find((m) => m.role === "user")?.content ??
-          "your question";
-        return `Sorry — the AI service is temporarily unavailable (rate limit or quota). Meanwhile, here's a quick suggestion for: "${lastUser}"\n\n- Try rephrasing the question more specifically.\n- Check the Learn tab for recommended resources.\n- Try again in a minute.`;
-      }
-      const backoffMs = Math.pow(2, attempt) * 500;
-      await new Promise((res) => setTimeout(res, backoffMs));
     }
   }
 
