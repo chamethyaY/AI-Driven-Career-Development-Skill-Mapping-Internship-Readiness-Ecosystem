@@ -4,7 +4,7 @@
 
 ### *The AI-Powered Career Operating System for Student Developers*
 
-<img src="./assets/banner.png" alt="CareerForge Banner" style="width:100%; height:650px; object-fit:cover;" />
+<img src="./assets/banner.png" alt="CareerForge Banner" style="width:100%; height:550px; object-fit:cover;" />
 
 <br/>
 
