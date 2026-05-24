@@ -107,7 +107,7 @@ An interactive skill tree covering every major development domain.
 Shows exactly what to learn next based on the user's real skill progress.
 
 - "Continue where you left off" card — first unticked skill in the user's selected domain
-- Full learning roadmap per domain — done ✅ / current 🔵 / not started
+- Full learning roadmap per domain — done  / current  / not started
 - AI-generated resources per skill via Gemini API — YouTube tutorials, official docs, freeCodeCamp, practice sites
 - Resources generated once per skill, cached permanently in Supabase — no repeated API calls
 - All resources are free — links open in browser or YouTube app with one tap
