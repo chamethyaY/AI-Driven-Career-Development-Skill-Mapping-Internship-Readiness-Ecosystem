@@ -19,7 +19,16 @@ import { fetchUserDomainSkillLists } from "./SkillsScreen";
 
 // LearnScreen uses canonical domain/skill data from SkillsScreen
 
-export default function LearnScreen() {
+type LearnScreenProps = {
+  initialSelectedSkill?: {
+    id: string;
+    name: string;
+  };
+};
+
+export default function LearnScreen({
+  initialSelectedSkill,
+}: LearnScreenProps) {
   const [profile, setProfile] = useState<any>(null);
   const [tickedIds, setTickedIds] = useState<Set<string>>(new Set());
   const [userRoles, setUserRoles] = useState<string[]>([]);
@@ -86,6 +95,15 @@ export default function LearnScreen() {
 
     if (next) {
       setNextSkill(next);
+    }
+
+    if (initialSelectedSkill) {
+      void loadResourcesForSkill(
+        initialSelectedSkill.id,
+        initialSelectedSkill.name,
+        prof,
+      );
+    } else if (next) {
       setSelectedSkill({ id: next.id, name: next.name });
       void loadResourcesForSkill(next.id, next.name, prof);
     }
@@ -195,109 +213,6 @@ export default function LearnScreen() {
         )}
 
         <View style={styles.section}>
-          <Text style={styles.sectionLabel}>
-            {selectedSkill
-              ? `Resources for ${selectedSkill.name}`
-              : "Resources"}
-          </Text>
-
-          {loadingResources ? (
-            <View style={styles.resourcesLoading}>
-              <ActivityIndicator color="#534AB7" />
-              <Text style={styles.resourcesLoadingText}>
-                Generating resources with Gemini AI...
-              </Text>
-            </View>
-          ) : resources.length > 0 ? (
-            <View style={styles.resourcesList}>
-              {resources.map((res, index) => (
-                <TouchableOpacity
-                  key={`${res.title}-${index}`}
-                  style={styles.resourceCard}
-                  onPress={() => void openResource(res.url)}
-                  activeOpacity={0.7}
-                >
-                  <View
-                    style={[
-                      styles.resIcon,
-                      {
-                        backgroundColor:
-                          res.provider.toLowerCase() === "youtube"
-                            ? "#E8593C15"
-                            : res.provider.toLowerCase() === "freecodecamp"
-                              ? "#1D9E7515"
-                              : res.provider.toLowerCase() === "mdn"
-                                ? "#378ADD15"
-                                : "#7F77DD15",
-                      },
-                    ]}
-                  >
-                    <Ionicons
-                      name={
-                        res.provider.toLowerCase() === "youtube"
-                          ? "logo-youtube"
-                          : res.provider.toLowerCase() === "freecodecamp"
-                            ? "school-outline"
-                            : res.provider.toLowerCase() === "mdn"
-                              ? "document-text-outline"
-                              : "link-outline"
-                      }
-                      size={18}
-                      color={
-                        res.provider.toLowerCase() === "youtube"
-                          ? "#E8593C"
-                          : res.provider.toLowerCase() === "freecodecamp"
-                            ? "#1D9E75"
-                            : res.provider.toLowerCase() === "mdn"
-                              ? "#378ADD"
-                              : "#7F77DD"
-                      }
-                    />
-                  </View>
-
-                  <View style={{ flex: 1 }}>
-                    <Text style={styles.resTitle} numberOfLines={2}>
-                      {res.title}
-                    </Text>
-                    <View style={styles.resMeta}>
-                      <Text style={styles.resProvider}>{res.provider}</Text>
-                      <Text style={styles.resDot}>·</Text>
-                      <Ionicons
-                        name={
-                          res.resource_type === "video"
-                            ? "play-circle-outline"
-                            : res.resource_type === "practice"
-                              ? "code-slash-outline"
-                              : "document-text-outline"
-                        }
-                        size={11}
-                        color="#6B6A7A"
-                      />
-                      <Text style={styles.resType}>{res.resource_type}</Text>
-                      <View style={styles.resFree}>
-                        <Text style={styles.resFreeText}>Free</Text>
-                      </View>
-                    </View>
-                  </View>
-
-                  <Ionicons name="open-outline" size={16} color="#4A4A5A" />
-                </TouchableOpacity>
-              ))}
-            </View>
-          ) : resourcesError ? (
-            <View style={styles.emptyBox}>
-              <Text style={styles.emptyText}>{resourcesError}</Text>
-            </View>
-          ) : (
-            <View style={styles.emptyBox}>
-              <Text style={styles.emptyText}>
-                Tap a skill below to load its resources
-              </Text>
-            </View>
-          )}
-        </View>
-
-        <View style={styles.section}>
           <Text style={styles.sectionLabel}>All learning paths</Text>
           {sortedDomains.map((domain) => {
             const isPrimary = userRoles.includes(domain.id);
@@ -364,59 +279,185 @@ export default function LearnScreen() {
                     const isCurrent = selectedSkill?.id === skill.id;
 
                     return (
-                      <TouchableOpacity
-                        key={skill.id}
-                        style={[
-                          styles.skillRow,
-                          isCurrent && styles.skillRowActive,
-                        ]}
-                        onPress={() =>
-                          void loadResourcesForSkill(
-                            skill.id,
-                            skill.name,
-                            profile,
-                          )
-                        }
-                        activeOpacity={0.7}
-                      >
-                        <View
+                      <View key={skill.id}>
+                        <TouchableOpacity
                           style={[
-                            styles.skillDot,
-                            isDone && styles.skillDotDone,
-                            isCurrent && !isDone && styles.skillDotCurrent,
+                            styles.skillRow,
+                            isCurrent && styles.skillRowActive,
                           ]}
+                          onPress={() =>
+                            void loadResourcesForSkill(
+                              skill.id,
+                              skill.name,
+                              profile,
+                            )
+                          }
+                          activeOpacity={0.7}
                         >
-                          {isDone ? (
-                            <Ionicons name="checkmark" size={10} color="#fff" />
-                          ) : isCurrent ? (
-                            <Ionicons name="play" size={8} color="#fff" />
-                          ) : null}
-                        </View>
+                          <View
+                            style={[
+                              styles.skillDot,
+                              isDone && styles.skillDotDone,
+                              isCurrent && !isDone && styles.skillDotCurrent,
+                            ]}
+                          >
+                            {isDone ? (
+                              <Ionicons name="checkmark" size={10} color="#fff" />
+                            ) : isCurrent ? (
+                              <Ionicons name="play" size={8} color="#fff" />
+                            ) : null}
+                          </View>
 
-                        <Text
-                          style={[
-                            styles.skillName,
-                            isDone && styles.skillNameDone,
-                            isCurrent && styles.skillNameCurrent,
-                          ]}
-                        >
-                          {skill.name}
-                        </Text>
+                          <Text
+                            style={[
+                              styles.skillName,
+                              isDone && styles.skillNameDone,
+                              isCurrent && styles.skillNameCurrent,
+                            ]}
+                          >
+                            {skill.name}
+                          </Text>
 
-                        <Text
-                          style={[
-                            styles.skillAction,
-                            isDone && { color: "#1D9E75" },
-                            isCurrent && { color: "#7F77DD" },
-                          ]}
-                        >
-                          {isDone
-                            ? "Done ✓"
-                            : isCurrent
-                              ? "Viewing"
-                              : "Tap to learn"}
-                        </Text>
-                      </TouchableOpacity>
+                          <Text
+                            style={[
+                              styles.skillAction,
+                              isDone && { color: "#1D9E75" },
+                              isCurrent && { color: "#7F77DD" },
+                            ]}
+                          >
+                            {isDone
+                              ? "Done ✓"
+                              : isCurrent
+                                ? "Viewing"
+                                : "Tap to learn"}
+                          </Text>
+                        </TouchableOpacity>
+
+                        {isCurrent && (
+                          <View style={styles.inlineResourcesWrap}>
+                            <Text style={styles.inlineResourcesLabel}>
+                              Resources for {skill.name}
+                            </Text>
+
+                            {loadingResources ? (
+                              <View style={styles.resourcesLoading}>
+                                <ActivityIndicator color="#534AB7" />
+                                <Text style={styles.resourcesLoadingText}>
+                                  Generating resources with Gemini AI...
+                                </Text>
+                              </View>
+                            ) : resources.length > 0 ? (
+                              <View style={styles.resourcesList}>
+                                {resources.map((res, index) => (
+                                  <TouchableOpacity
+                                    key={`${res.title}-${index}`}
+                                    style={styles.resourceCard}
+                                    onPress={() => void openResource(res.url)}
+                                    activeOpacity={0.7}
+                                  >
+                                    <View
+                                      style={[
+                                        styles.resIcon,
+                                        {
+                                          backgroundColor:
+                                            res.provider.toLowerCase() ===
+                                            "youtube"
+                                              ? "#E8593C15"
+                                              : res.provider.toLowerCase() ===
+                                                  "freecodecamp"
+                                                ? "#1D9E7515"
+                                                : res.provider.toLowerCase() ===
+                                                    "mdn"
+                                                  ? "#378ADD15"
+                                                  : "#7F77DD15",
+                                        },
+                                      ]}
+                                    >
+                                      <Ionicons
+                                        name={
+                                          res.provider.toLowerCase() ===
+                                          "youtube"
+                                            ? "logo-youtube"
+                                            : res.provider.toLowerCase() ===
+                                                "freecodecamp"
+                                              ? "school-outline"
+                                              : res.provider.toLowerCase() ===
+                                                  "mdn"
+                                                ? "document-text-outline"
+                                                : "link-outline"
+                                        }
+                                        size={18}
+                                        color={
+                                          res.provider.toLowerCase() ===
+                                          "youtube"
+                                            ? "#E8593C"
+                                            : res.provider.toLowerCase() ===
+                                                "freecodecamp"
+                                              ? "#1D9E75"
+                                              : res.provider.toLowerCase() ===
+                                                  "mdn"
+                                                ? "#378ADD"
+                                                : "#7F77DD"
+                                        }
+                                      />
+                                    </View>
+
+                                    <View style={{ flex: 1 }}>
+                                      <Text style={styles.resTitle} numberOfLines={2}>
+                                        {res.title}
+                                      </Text>
+                                      <View style={styles.resMeta}>
+                                        <Text style={styles.resProvider}>
+                                          {res.provider}
+                                        </Text>
+                                        <Text style={styles.resDot}>·</Text>
+                                        <Ionicons
+                                          name={
+                                            res.resource_type === "video"
+                                              ? "play-circle-outline"
+                                              : res.resource_type ===
+                                                  "practice"
+                                                ? "code-slash-outline"
+                                                : "document-text-outline"
+                                          }
+                                          size={11}
+                                          color="#6B6A7A"
+                                        />
+                                        <Text style={styles.resType}>
+                                          {res.resource_type}
+                                        </Text>
+                                        <View style={styles.resFree}>
+                                          <Text style={styles.resFreeText}>
+                                            Free
+                                          </Text>
+                                        </View>
+                                      </View>
+                                    </View>
+
+                                    <Ionicons
+                                      name="open-outline"
+                                      size={16}
+                                      color="#4A4A5A"
+                                    />
+                                  </TouchableOpacity>
+                                ))}
+                              </View>
+                            ) : resourcesError ? (
+                              <View style={styles.emptyBox}>
+                                <Text style={styles.emptyText}>
+                                  {resourcesError}
+                                </Text>
+                              </View>
+                            ) : (
+                              <View style={styles.emptyBox}>
+                                <Text style={styles.emptyText}>
+                                  No resources loaded yet
+                                </Text>
+                              </View>
+                            )}
+                          </View>
+                        )}
+                      </View>
                     );
                   })}
                 </View>
@@ -661,6 +702,19 @@ const styles = StyleSheet.create({
   domainBarFill: { height: "100%" },
 
   skillsList: { padding: 12, gap: 12 },
+  inlineResourcesWrap: {
+    marginTop: 8,
+    marginBottom: 4,
+    paddingHorizontal: 12,
+    paddingBottom: 12,
+  },
+  inlineResourcesLabel: {
+    fontSize: 12,
+    fontWeight: "500",
+    lineHeight: 16,
+    color: "#7F77DD",
+    marginBottom: 8,
+  },
   skillRow: {
     flexDirection: "row",
     alignItems: "center",

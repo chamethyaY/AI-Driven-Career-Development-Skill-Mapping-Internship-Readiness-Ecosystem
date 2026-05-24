@@ -85,7 +85,10 @@ export default function AIChatScreen() {
         .order("created_at", { ascending: true });
 
       const history: Message[] = Array.isArray(chatRows)
-        ? chatRows.map((r: any) => ({ role: r.role as Message['role'], content: r.content }))
+        ? chatRows.map((r: any) => ({
+            role: r.role as Message["role"],
+            content: r.content,
+          }))
         : [];
 
       if (history.length > 0) {

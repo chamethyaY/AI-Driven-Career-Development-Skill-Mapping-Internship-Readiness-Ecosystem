@@ -19,9 +19,9 @@ type Props = {
 };
 
 export function MainApp({ onSignOut }: Props) {
-  const [internshipProgress] = useState(62);
+  const [internshipProgress, setInternshipProgress] = useState(62);
   const [dayStreak] = useState(12);
-  const [skillsDone] = useState(18);
+  const [skillsDone, setSkillsDone] = useState(18);
   const [projectsBuilt] = useState(4);
   const [activeTab, setActiveTab] = useState<
     "home" | "learn" | "skills" | "chat"
@@ -30,6 +30,7 @@ export function MainApp({ onSignOut }: Props) {
   const [initials, setInitials] = useState<string>("?");
 
   const screenWidth = Dimensions.get("window").width;
+
   const [selectedSkill, setSelectedSkill] = useState<{
     skillId: string;
     skillName: string;
@@ -101,6 +102,8 @@ export function MainApp({ onSignOut }: Props) {
         console.log("Setting userName to:", name);
         setUserName(name);
         setInitials(computeInitials(name));
+
+        // keep original behavior: don't compute or subscribe here (skills handled in SkillsScreen)
       } catch (e) {
         console.error("loadUser exception:", e);
       }
@@ -108,6 +111,10 @@ export function MainApp({ onSignOut }: Props) {
     loadUser();
     return () => {
       mounted = false;
+      try {
+        const ch = (global as any).__supabase_skill_channel;
+        if (ch) supabase.removeChannel(ch);
+      } catch (e) {}
     };
   }, []);
 
@@ -120,6 +127,10 @@ export function MainApp({ onSignOut }: Props) {
           onOpenResources={(skillId: string, skillName: string) => {
             setSelectedSkill({ skillId, skillName });
             setActiveTab("learn");
+          }}
+          onProgressChange={(done: number, pct: number) => {
+            setSkillsDone(done);
+            setInternshipProgress(pct);
           }}
         />
       ) : activeTab === "chat" ? (
@@ -184,17 +195,23 @@ export function MainApp({ onSignOut }: Props) {
           {/* Quick Actions */}
           <Text style={styles.sectionTitle}>QUICK ACTIONS</Text>
           <View style={styles.actionsGrid}>
-            <TouchableOpacity style={styles.actionCard}>
+            <TouchableOpacity
+              style={styles.actionCard}
+              onPress={() => setActiveTab("learn")}
+            >
               <View style={styles.actionIconBox}>
                 <Ionicons name="book" size={24} color="#7B6CF6" />
               </View>
               <Text style={styles.actionText}>Continue Learning</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.actionCard}>
+            <TouchableOpacity
+              style={styles.actionCard}
+              onPress={() => setActiveTab("skills")}
+            >
               <View style={styles.actionIconBox}>
-                <Ionicons name="map" size={24} color="#2EC6C6" />
+                <Ionicons name="bar-chart" size={24} color="#2EC6C6" />
               </View>
-              <Text style={styles.actionText}>View Roadmap</Text>
+              <Text style={styles.actionText}>Skills</Text>
             </TouchableOpacity>
             <TouchableOpacity
               style={styles.actionCard}
@@ -204,12 +221,6 @@ export function MainApp({ onSignOut }: Props) {
                 <Ionicons name="chatbubble" size={24} color="#C86DD7" />
               </View>
               <Text style={styles.actionText}>Chat with AI</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.actionCard}>
-              <View style={styles.actionIconBox}>
-                <Ionicons name="folder" size={24} color="#F77F00" />
-              </View>
-              <Text style={styles.actionText}>Projects</Text>
             </TouchableOpacity>
           </View>
 
@@ -221,14 +232,15 @@ export function MainApp({ onSignOut }: Props) {
             </View>
             <View style={styles.insightContent}>
               <Text style={styles.insightText}>
-                Based on your progress, focus on{" "}
+                You have completed {skillsDone} skills and reached {internshipProgress}% readiness.
+                Next, focus on{" "}
                 <Text style={styles.insightHighlight}>
                   TypeScript and React Testing
                 </Text>{" "}
-                to boost your readiness by 15%.
+                to keep moving toward internship-ready.
               </Text>
-              <TouchableOpacity>
-                <Text style={styles.insightLink}>View details →</Text>
+              <TouchableOpacity onPress={() => setActiveTab("learn")}>
+                <Text style={styles.insightLink}>Open learning path →</Text>
               </TouchableOpacity>
             </View>
           </View>
@@ -393,6 +405,7 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: "700",
     color: "#FFFFFF",
+    padding: 16,
     marginTop: 8,
     marginBottom: 4,
   },
@@ -410,12 +423,13 @@ const styles = StyleSheet.create({
   },
   actionsGrid: {
     flexDirection: "row",
-    flexWrap: "wrap",
+    flexWrap: "nowrap",
     gap: 12,
     marginBottom: 32,
   },
   actionCard: {
-    width: "48%",
+    flexGrow: 1,
+    flexBasis: 0,
     backgroundColor: "rgba(255, 255, 255, 0.04)",
     borderRadius: 16,
     padding: 16,

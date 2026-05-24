@@ -34,7 +34,11 @@ function buildLocalFallbackReply(userMessage: string): string {
     return "For internships, focus on one stack, practice common interview questions, and prepare 2 projects you can explain clearly.";
   }
 
-  if (text.includes("learn") || text.includes("study") || text.includes("skill")) {
+  if (
+    text.includes("learn") ||
+    text.includes("study") ||
+    text.includes("skill")
+  ) {
     return "Pick one skill to improve this week, study it in short sessions, and apply it immediately in a small task or project.";
   }
 
@@ -113,7 +117,9 @@ Deno.serve(async (req) => {
     if (!geminiResult) {
       console.error("Gemini failed server-side", lastError);
 
-      const lastUser = [...messages].reverse().find((m) => m.role === "user")?.content ?? "your question";
+      const lastUser =
+        [...messages].reverse().find((m) => m.role === "user")?.content ??
+        "your question";
       const fallback = buildLocalFallbackReply(lastUser);
 
       return jsonResponse({ reply: fallback });

@@ -33,7 +33,11 @@ function buildLocalFallbackReply(userMessage: string): string {
     return "For internships, focus on one stack, practice common interview questions, and prepare 2 projects you can explain clearly.";
   }
 
-  if (text.includes("learn") || text.includes("study") || text.includes("skill")) {
+  if (
+    text.includes("learn") ||
+    text.includes("study") ||
+    text.includes("skill")
+  ) {
     return "Pick one skill to improve this week, study it in short sessions, and apply it immediately in a small task or project.";
   }
 

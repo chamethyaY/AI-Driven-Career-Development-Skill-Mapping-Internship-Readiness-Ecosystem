@@ -101,9 +101,10 @@ const TOTAL_SKILLS = ALL_DOMAINS.reduce((acc, d) => acc + d.skills.length, 0);
 
 type SkillsScreenProps = {
   onOpenResources?: (skillId: string, skillName: string) => void;
+  onProgressChange?: (done: number, pct: number) => void;
 };
 
-export function SkillsScreen({ onOpenResources }: SkillsScreenProps) {
+export function SkillsScreen({ onOpenResources, onProgressChange }: SkillsScreenProps) {
   const [domains, setDomains] = useState<Domain[]>([]);
   const [userRoles, setUserRoles] = useState<string[]>([]);
   const [expandedDomains, setExpandedDomains] = useState<string[]>([]);
@@ -160,6 +161,10 @@ export function SkillsScreen({ onOpenResources }: SkillsScreenProps) {
       roles.length > 0 ? roles : ([sorted[0]?.id].filter(Boolean) as string[]),
     );
     setDomains(sorted);
+    // notify parent of current progress
+    const totalDoneNow = built.reduce((acc, d) => acc + d.skills.filter((s) => s.ticked).length, 0);
+    const pctNow = TOTAL_SKILLS > 0 ? Math.round((totalDoneNow / TOTAL_SKILLS) * 100) : 0;
+    if (onProgressChange) onProgressChange(totalDoneNow, pctNow);
     setLoading(false);
   };
 
@@ -178,6 +183,12 @@ export function SkillsScreen({ onOpenResources }: SkillsScreenProps) {
     }
 
     const nowTicked = !skill.ticked;
+    const currentDone = domains.reduce(
+      (acc, entry) => acc + entry.skills.filter((item) => item.ticked).length,
+      0,
+    );
+    const nextDone = nowTicked ? currentDone + 1 : currentDone - 1;
+    const nextPct = TOTAL_SKILLS > 0 ? Math.round((nextDone / TOTAL_SKILLS) * 100) : 0;
 
     setDomains((prev) =>
       prev.map((entry) =>
@@ -211,6 +222,8 @@ export function SkillsScreen({ onOpenResources }: SkillsScreenProps) {
     }
 
     setSavingSkill(null);
+    // notify parent of updated progress
+    if (onProgressChange) onProgressChange(nextDone, nextPct);
   };
 
   const toggleDomain = (domainId: string) => {
