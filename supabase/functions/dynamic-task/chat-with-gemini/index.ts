@@ -19,6 +19,28 @@ function extractText(result: any): string {
     .trim();
 }
 
+function buildLocalFallbackReply(userMessage: string): string {
+  const text = userMessage.toLowerCase();
+
+  if (text.includes("roadmap") || text.includes("plan")) {
+    return "Try this next: pick one goal for this week, focus on one core skill, and complete one small project task before moving on.";
+  }
+
+  if (text.includes("project") || text.includes("build")) {
+    return "A strong next move is to build one small project with a clear feature, then add a short README and deploy it once.";
+  }
+
+  if (text.includes("interview") || text.includes("internship")) {
+    return "For internships, focus on one stack, practice common interview questions, and prepare 2 projects you can explain clearly.";
+  }
+
+  if (text.includes("learn") || text.includes("study") || text.includes("skill")) {
+    return "Pick one skill to improve this week, study it in short sessions, and apply it immediately in a small task or project.";
+  }
+
+  return "Keep going: choose one clear next step, do it today, and build from there. If you want, ask me for a project idea, roadmap, or interview prep plan.";
+}
+
 Deno.serve(async (req) => {
   try {
     if (req.method !== "POST")
@@ -91,11 +113,8 @@ Deno.serve(async (req) => {
     if (!geminiResult) {
       console.error("Gemini failed server-side", lastError);
 
-      // Provide a friendly fallback reply to keep chat usable when Gemini
-      // returns errors (rate limits, quota exhausted, etc.). This mirrors
-      // the client fallback used elsewhere so users get helpful guidance.
       const lastUser = [...messages].reverse().find((m) => m.role === "user")?.content ?? "your question";
-      const fallback = `Sorry — the AI service is temporarily unavailable (rate limit or quota). Quick tip for "${lastUser}": check the Learn tab for resources and try again shortly.`;
+      const fallback = buildLocalFallbackReply(lastUser);
 
       return jsonResponse({ reply: fallback });
     }

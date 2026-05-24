@@ -72,12 +72,12 @@ export function MainApp({ onSignOut }: Props) {
 
         console.log("Loading user:", user.id, user.email);
 
-        // Try to read the display name from user_profiles
+        // Try to read profile data from user_profiles.
         let name = "";
         try {
           const { data: profile, error: profileErr } = await supabase
             .from("user_profiles")
-            .select("name, full_name, display_name")
+            .select("goal, level, roles, time_commitment")
             .eq("id", user.id)
             .single();
 
@@ -85,10 +85,6 @@ export function MainApp({ onSignOut }: Props) {
 
           if (profileErr) {
             console.warn("Profile query error:", profileErr.message);
-          } else if (profile) {
-            name =
-              profile.name || profile.full_name || profile.display_name || "";
-            console.log("Found name from profile:", name);
           }
         } catch (e) {
           console.warn("Profile read exception:", e);

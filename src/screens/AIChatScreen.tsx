@@ -17,6 +17,8 @@ import { Ionicons } from "@expo/vector-icons";
 import { supabase } from "../services/supabase";
 import { sendToGemini, buildSystemPrompt, Message } from "../lib/geminiChat";
 
+let hasShownChatWelcome = false;
+
 export default function AIChatScreen() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [welcomeMessage, setWelcomeMessage] = useState("");
@@ -75,12 +77,29 @@ export default function AIChatScreen() {
           ? profile.roles.join(", ")
           : String(profile.roles)
         : "your profile role";
+      // Load existing chat history for this user so returning preserves messages
+      const { data: chatRows } = await supabase
+        .from("chat_messages")
+        .select("role,content,created_at")
+        .eq("user_id", user.id)
+        .order("created_at", { ascending: true });
 
-      setWelcomeMessage(
-        `Hey ${userName}! 👋 I'm Forge AI, your personal career mentor. I can see you're aiming for ${goalText} with interests in ${rolesText}.`,
-      );
+      const history: Message[] = Array.isArray(chatRows)
+        ? chatRows.map((r: any) => ({ role: r.role as Message['role'], content: r.content }))
+        : [];
 
-      setMessages([]);
+      if (history.length > 0) {
+        // If the user already has a conversation, show it and skip the welcome
+        setMessages(history);
+        setWelcomeMessage("");
+        hasShownChatWelcome = true;
+      } else if (!hasShownChatWelcome) {
+        setWelcomeMessage(
+          `Hey ${userName}! 👋 I'm Forge AI, your personal career mentor. I can see you're aiming for ${goalText} with interests in ${rolesText}.`,
+        );
+      } else {
+        setWelcomeMessage("");
+      }
     } catch (err) {
       console.error("initChat error:", err);
       setWelcomeMessage("Hey! 👋 I'm Forge AI, your personal career mentor.");
@@ -104,6 +123,8 @@ export default function AIChatScreen() {
 
     const userMessage: Message = { role: "user", content: messageText };
     const updatedMessages = [...messages, userMessage];
+    setWelcomeMessage("");
+    hasShownChatWelcome = true;
     setMessages(updatedMessages);
 
     await supabase.from("chat_messages").insert({
@@ -352,7 +373,8 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     gap: 10,
-    padding: 14,
+    paddingTop: 14,
+    paddingBottom: 8,
     borderBottomWidth: 0.5,
     borderBottomColor: "#1A1A22",
   },
@@ -378,9 +400,9 @@ const styles = StyleSheet.create({
     backgroundColor: "#1D9E75",
     marginLeft: "auto",
   },
-  welcomeWrap: { paddingTop: 16 },
+  welcomeWrap: { paddingTop: 0, marginTop: -6 },
   messagesList: {
-    paddingTop: 16,
+    paddingTop: 0,
     paddingBottom: 220,
     paddingHorizontal: 16,
     gap: 12,

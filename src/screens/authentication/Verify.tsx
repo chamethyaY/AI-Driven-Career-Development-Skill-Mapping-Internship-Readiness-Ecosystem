@@ -92,22 +92,7 @@ export function Verify({
         if (user) {
           try {
             const payload: any = { id: user.id };
-            // prefer explicit name param, fall back to auth metadata
-            const meta = (user.user_metadata || {}) as any;
-            const finalName =
-              name ||
-              meta?.name ||
-              meta?.full_name ||
-              meta?.display_name ||
-              null;
-            if (finalName) {
-              payload.name = finalName;
-              console.log("Saving profile with name:", finalName);
-            } else {
-              console.warn(
-                "No name provided to save in profile; skipping name field",
-              );
-            }
+            console.log("Saving profile row for user:", user.id);
 
             // Use upsert to handle existing rows (e.g., from RLS triggers)
             const { data: upsertResult, error: upsertErr } = await supabase
